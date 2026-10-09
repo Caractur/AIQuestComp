@@ -1,0 +1,45 @@
+[project]
+name = "import-compliance-rag"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.20.0",
+    "fonttools>=4.66.1",
+    "pdfplumber>=0.11.10",
+    "pgvector>=0.5.1",
+    "psycopg[binary]>=3.3.6",
+    "pydantic>=2.14.0",
+    "pydantic-settings>=2.15.0",
+    "pymupdf>=1.28.2",
+    "pyyaml>=6.0.3",
+    "sqlalchemy>=2",
+    "typer>=0.27.3",
+]
+
+[project.scripts]
+import-compliance-rag = "import_compliance_rag:main"
+
+[project.optional-dependencies]
+ml = [
+    "sentence-transformers>=6.1.0",
+    "torch>=2.14.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.24,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.10",
+]

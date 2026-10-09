@@ -48,8 +48,15 @@ docker build -t localhost/icr-tesseract:latest -f docker/ocr.Containerfile docke
 # .env: ICR_OCR__CONTAINER_IMAGE=localhost/icr-tesseract:latest
 ```
 
-**Source files** are git-ignored. Download each `official_url` from the registry to
-`data/sources/raw/<id>/source.pdf` and check the SHA-256 prefix in its `provenance_note`.
+**Source files**: copies of the four official PDFs are in `pdfs/` (`<id>.pdf`). Ingestion reads them
+from `data/sources/raw/<id>/source.pdf` (git-ignored), so copy them into place once:
+
+```bash
+for f in pdfs/*.pdf; do id=$(basename "$f" .pdf); mkdir -p "data/sources/raw/$id"; cp "$f" "data/sources/raw/$id/source.pdf"; done
+```
+
+Each file's SHA-256 prefix is listed in the registry's `provenance_note`; the originals are at each
+`official_url`.
 
 ## Usage
 

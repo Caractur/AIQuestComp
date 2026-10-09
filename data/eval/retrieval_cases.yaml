@@ -1,0 +1,187 @@
+# Retrieval evaluation cases for the current corpus (data/sources/registry.yaml).
+#
+# STATUS: every case is a DRAFT. They were written by Claude from the extracted texts on 2026-10-09
+# and have not been reviewed by a Jordanian trade-law expert. Results computed on them indicate
+# relative behaviour between configurations only; they are not validated quality figures.
+# To promote a case, a reviewer checks the query wording and the relevant articles against the
+# source PDFs and sets review_status: reviewed.
+#
+# Targets are version-independent (document id + article / treaty paragraph number).
+# grade: 2 = directly answers the query, 1 = partially relevant or supporting.
+
+version: 1
+description: Bilingual retrieval cases over Law 21/2001, Bylaw 114/2004, Agriculture Law 13/2015 and US-Jordan FTA Annex 2.2.
+cases:
+  # ---------------------------------------------------------------- Arabic query -> Arabic sources
+  - id: ar-ar-licence-validity
+    query: ما هي مدة سريان رخصة الاستيراد؟
+    query_language: ar
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "8", grade: 2}]
+  - id: ar-ar-licence-transfer
+    query: هل يجوز التنازل عن رخصة الاستيراد لشخص آخر؟
+    query_language: ar
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "9", grade: 2}]
+  - id: ar-ar-licence-cancellation
+    query: متى يتم الغاء رخصة الاستيراد او التصدير؟
+    query_language: ar
+    relevant:
+      - {document_id: mit-import-export-law-21-2001, article_number: "10", grade: 2}
+      - {document_id: mit-import-export-licenses-system-114-2004, article_number: "10", grade: 1}
+  - id: ar-ar-import-ban-authority
+    query: من يملك صلاحية حظر استيراد بضاعة معينة؟
+    query_language: ar
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "6", grade: 2}]
+  - id: ar-ar-licence-fee
+    query: ما هي رسوم اصدار رخصة الاستيراد؟
+    query_language: ar
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "12", grade: 2}]
+  - id: ar-ar-no-importer-card-fine
+    query: ما هي الغرامة اذا لم يكن لدى المستورد بطاقة مستورد عند التخليص على البضاعة؟
+    query_language: ar
+    relevant:
+      - {document_id: mit-import-export-licenses-system-114-2004, article_number: "13", grade: 2}
+      - {document_id: mit-import-export-law-21-2001, article_number: "3", grade: 1}
+  - id: ar-ar-licence-issue-deadline
+    query: خلال كم يوما تصدر الوزارة رخصة الاستيراد بعد تقديم الطلب؟
+    query_language: ar
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "8", grade: 2}]
+  - id: ar-ar-licence-contents
+    query: ما هي البيانات التي يجب ان تتضمنها رخصة الاستيراد؟
+    query_language: ar
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "7", grade: 2}]
+  - id: ar-ar-licence-exemptions
+    query: الجهات والبضائع المعفاة من الحصول على رخصة استيراد
+    query_language: ar
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "11", grade: 2}]
+  - id: ar-ar-plant-import-prohibitions
+    query: حالات حظر ادخال النباتات والمنتجات النباتية الى المملكة
+    query_language: ar
+    relevant:
+      - {document_id: moa-agriculture-law-13-2015, article_number: "23", grade: 2}
+      - {document_id: moa-agriculture-law-13-2015, article_number: "25", grade: 1}
+  - id: ar-ar-pesticide-registration
+    query: هل يجوز ادخال المبيدات الى المملكة دون تسجيلها لدى الوزارة؟
+    query_language: ar
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "21", grade: 2}]
+  - id: ar-ar-veterinary-quarantine
+    query: اجراءات الحجر البيطري عند ادخال الحيوانات ومنتجاتها الى المملكة
+    query_language: ar
+    relevant:
+      - {document_id: moa-agriculture-law-13-2015, article_number: "50", grade: 2}
+      - {document_id: moa-agriculture-law-13-2015, article_number: "45", grade: 1}
+  - id: ar-ar-feed-licensing
+    query: ترخيص وتسجيل الاعلاف والاضافات العلفية
+    query_language: ar
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "43", grade: 2}]
+  - id: ar-ar-veterinary-medicines
+    query: تسجيل الادوية البيطرية والمستحضرات الحياتية البيطرية
+    query_language: ar
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "44", grade: 2}]
+  - id: ar-ar-agri-import-licences
+    query: من يصدر رخص استيراد المنتجات الزراعية ومدخلات الانتاج الزراعي؟
+    query_language: ar
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "9", grade: 2}]
+  - id: ar-ar-general-penalty
+    query: ما هي عقوبة مخالفة احكام قانون الزراعة التي لم يرد نص على عقوبتها؟
+    query_language: ar
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "67", grade: 2}]
+  - id: ar-ar-definition-agri-inputs
+    query: تعريف مدخلات الانتاج الزراعي
+    query_language: ar
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "2", grade: 2}]
+
+  # ---------------------------------------------------------------- English query -> Arabic sources
+  - id: en-ar-licence-validity
+    query: How long is an import licence valid?
+    query_language: en
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "8", grade: 2}]
+  - id: en-ar-licence-transfer
+    query: Can an import licence be transferred to another person?
+    query_language: en
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "9", grade: 2}]
+  - id: en-ar-licence-fee
+    query: What fee is charged for issuing an import licence?
+    query_language: en
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "12", grade: 2}]
+  - id: en-ar-no-importer-card-fine
+    query: What is the penalty for clearing goods without an importer card?
+    query_language: en
+    relevant:
+      - {document_id: mit-import-export-licenses-system-114-2004, article_number: "13", grade: 2}
+      - {document_id: mit-import-export-law-21-2001, article_number: "3", grade: 1}
+  - id: en-ar-licence-exemptions
+    query: Which goods and entities are exempt from needing an import licence?
+    query_language: en
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "11", grade: 2}]
+  - id: en-ar-plant-import-prohibitions
+    query: When is it prohibited to bring plants and plant products into Jordan?
+    query_language: en
+    relevant:
+      - {document_id: moa-agriculture-law-13-2015, article_number: "23", grade: 2}
+      - {document_id: moa-agriculture-law-13-2015, article_number: "25", grade: 1}
+  - id: en-ar-pesticide-registration
+    query: Is registration with the ministry required to import pesticides?
+    query_language: en
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "21", grade: 2}]
+  - id: en-ar-veterinary-quarantine
+    query: Veterinary quarantine requirements for importing animals and animal products
+    query_language: en
+    relevant:
+      - {document_id: moa-agriculture-law-13-2015, article_number: "50", grade: 2}
+      - {document_id: moa-agriculture-law-13-2015, article_number: "45", grade: 1}
+  - id: en-ar-licence-issue-deadline
+    query: Within how many days must the ministry issue an import licence?
+    query_language: en
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "8", grade: 2}]
+  - id: en-ar-agri-import-licences
+    query: Which authority issues import licences for agricultural products and farm inputs?
+    query_language: en
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "9", grade: 2}]
+  - id: en-ar-quantity-tolerance
+    query: What happens if the imported quantity exceeds the quantity stated in the licence?
+    query_language: en
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "14", grade: 2}]
+
+  # ---------------------------------------------------------------- Arabic query -> English source
+  - id: ar-en-domestic-content
+    query: ما هي نسبة المحتوى المحلي المطلوبة في قواعد المنشأ لاتفاقية التجارة الحرة مع الولايات المتحدة؟
+    query_language: ar
+    relevant:
+      - {document_id: ustr-jordan-fta-rules-of-origin, article_number: "1", grade: 2}
+      - {document_id: ustr-jordan-fta-rules-of-origin, article_number: "5", grade: 1}
+  - id: ar-en-imported-directly
+    query: ما المقصود بالاستيراد المباشر في اتفاقية التجارة الحرة الاردنية الامريكية؟
+    query_language: ar
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "8", grade: 2}]
+  - id: ar-en-textiles
+    query: قواعد المنشأ الخاصة بالمنسوجات والملابس
+    query_language: ar
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "9", grade: 2}]
+  - id: ar-en-importer-obligations
+    query: ما هي التزامات المستورد عند طلب المعاملة التفضيلية بموجب الاتفاقية؟
+    query_language: ar
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "10", grade: 2}]
+
+  # ---------------------------------------------------------------- English query -> English source
+  - id: en-en-domestic-content
+    query: What is the minimum domestic content required for preferential treatment under the US-Jordan FTA?
+    query_language: en
+    relevant:
+      - {document_id: ustr-jordan-fta-rules-of-origin, article_number: "1", grade: 2}
+      - {document_id: ustr-jordan-fta-rules-of-origin, article_number: "5", grade: 1}
+  - id: en-en-simple-packaging
+    query: Does simple packaging or dilution with water make an article originating?
+    query_language: en
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "2", grade: 2}]
+  - id: en-en-direct-processing-costs
+    query: What counts as direct costs of processing operations?
+    query_language: en
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "7", grade: 2}]
+  - id: en-en-importer-declaration
+    query: What must an importer be prepared to submit when claiming preferential treatment?
+    query_language: en
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "10", grade: 2}]
+  - id: en-en-other-party-materials
+    query: Can materials from the other Party count toward the domestic content requirement?
+    query_language: en
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "5", grade: 2}]

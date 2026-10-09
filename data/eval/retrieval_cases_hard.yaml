@@ -1,0 +1,199 @@
+# Harder retrieval cases (companion to retrieval_cases.yaml).
+#
+# STATUS: every case is a DRAFT, written by Claude on 2026-10-09 from the extracted texts and not
+# reviewed by a domain expert. Results indicate relative behaviour between configurations only.
+#
+# Tags:
+#   paraphrase  - everyday wording that avoids the legal vocabulary of the target article
+#   identifier  - lookups by article number, fee amount, HS code or instrument number
+#   negative    - the corpus does not cover the question (answerable: false); used to measure how
+#                 well top retrieval scores separate answerable from unanswerable questions
+#
+# Unanswerable cases were chosen for topics outside the four registered instruments (tariff rates,
+# JSMO standards, JFDA rules, other trade agreements, tax). They are unanswerable for THIS corpus
+# only; they will become answerable once those sources are ingested.
+
+version: 1
+description: Paraphrase, identifier and out-of-corpus cases over the four registered sources.
+cases:
+  # ------------------------------------------------------------------ paraphrases, Arabic queries
+  - id: h-ar-lost-licence
+    query: ضاعت مني رخصة الاستيراد، هل استطيع الحصول على نسخة جديدة بنفس الرقم؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "9", grade: 2}]
+  - id: h-ar-refusal-reason
+    query: هل يحق للجهة المختصة رفض طلبي دون ان تذكر السبب؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "7", grade: 2}]
+  - id: h-ar-personal-use
+    query: اذا احضرت اغراضا لاستعمالي الخاص هل احتاج الى بطاقة مستورد؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "3", grade: 2}]
+  - id: h-ar-who-can-get-card
+    query: شركتي مسجلة في غرفة التجارة، هل يمكنها الحصول على بطاقة للاستيراد؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant:
+      - {document_id: mit-import-export-licenses-system-114-2004, article_number: "4", grade: 2}
+      - {document_id: mit-import-export-licenses-system-114-2004, article_number: "3", grade: 1}
+  - id: h-ar-dead-animals
+    query: ما الغرامة على من يرمي الحيوانات الميتة في قنوات الري؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "48", grade: 2}]
+  - id: h-ar-forest-fire
+    query: عقوبة التسبب بحريق في الغابات
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "32", grade: 2}]
+  - id: h-ar-bee-import
+    query: شروط ادخال خلايا النحل المستوردة من الخارج
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "55", grade: 2}]
+  - id: h-ar-olive-press
+    query: هل احتاج ترخيصا لتشغيل معصرة زيتون؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "16", grade: 2}]
+  - id: h-ar-over-quantity
+    query: وصلت الشحنة بكمية اكبر قليلا من المذكورة في الرخصة، هل يتم التخليص عليها؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "14", grade: 2}]
+
+  # ------------------------------------------------------------------ paraphrases, English queries
+  - id: h-en-lost-licence
+    query: I lost my import permit. Can I get a replacement with the same number?
+    query_language: en
+    tags: [paraphrase]
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "9", grade: 2}]
+  - id: h-en-refusal-reason
+    query: Does the authority have to explain why it turned down my application?
+    query_language: en
+    tags: [paraphrase]
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "7", grade: 2}]
+  - id: h-en-export-origin-certificate
+    query: What document from the chamber of commerce do I need before I can get an export licence?
+    query_language: en
+    tags: [paraphrase]
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "5", grade: 2}]
+  - id: h-en-fishing
+    query: Rules on fishing licences and banned fishing methods such as explosives
+    query_language: en
+    tags: [paraphrase]
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "54", grade: 2}]
+  - id: h-en-entry-into-force
+    query: When did the Agriculture Law start to apply?
+    query_language: en
+    tags: [paraphrase]
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "1", grade: 2}]
+  - id: h-en-transit-third-country
+    query: Can goods pass through a third country on the way and still get FTA treatment?
+    query_language: en
+    tags: [paraphrase]
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "8", grade: 2}]
+  - id: h-en-verification-cooperation
+    query: Will the two governments help each other check whether claims of preferential treatment are genuine?
+    query_language: en
+    tags: [paraphrase]
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "11", grade: 2}]
+
+  # ------------------------------------------------------------------ cross-lingual paraphrases
+  - id: h-ar-en-transit
+    query: هل تفقد البضاعة صفة المنشأ اذا مرت عبر دولة ثالثة اثناء الشحن؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "8", grade: 2}]
+  - id: h-ar-en-neighbouring-materials
+    query: هل يمكن احتساب مواد من دول مجاورة للاردن ضمن نسبة الـ35 بالمئة؟
+    query_language: ar
+    tags: [paraphrase]
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: "13", grade: 2}]
+
+  # ------------------------------------------------------------------ identifiers
+  - id: h-id-ar-bylaw-art-13
+    query: المادة 13 من نظام رخص وبطاقات الاستيراد والتصدير
+    query_language: ar
+    tags: [identifier]
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "13", grade: 2}]
+  - id: h-id-ar-agri-63-bis
+    query: المادة ٦٣ مكرر من قانون الزراعة
+    query_language: ar
+    tags: [identifier]
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "63 مكرر", grade: 2}]
+  - id: h-id-en-law-art-11
+    query: Article 11 of the Import and Export Law No. 21 of 2001
+    query_language: en
+    tags: [identifier]
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "11", grade: 2}]
+  - id: h-id-ar-fee-15
+    query: 15 دينارا
+    query_language: ar
+    tags: [identifier]
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "12", grade: 2}]
+  - id: h-id-en-hs-0805
+    query: HS subheading 0805 processed into 2009.11
+    query_language: en
+    tags: [identifier]
+    relevant: [{document_id: ustr-jordan-fta-rules-of-origin, article_number: preamble, grade: 2}]
+  - id: h-id-ar-repealed-1992
+    query: قانون الاستيراد والتصدير رقم 14 لسنة 1992
+    query_language: ar
+    tags: [identifier]
+    relevant: [{document_id: mit-import-export-law-21-2001, article_number: "13", grade: 2}]
+  - id: h-id-ar-repealed-1973
+    query: قانون الزراعة رقم 20 لسنة 1973
+    query_language: ar
+    tags: [identifier]
+    relevant: [{document_id: moa-agriculture-law-13-2015, article_number: "72", grade: 2}]
+  - id: h-id-en-ten-percent
+    query: 10% tolerance on licensed quantity
+    query_language: en
+    tags: [identifier]
+    relevant: [{document_id: mit-import-export-licenses-system-114-2004, article_number: "14", grade: 2}]
+
+  # ------------------------------------------------------------------ outside the corpus
+  - id: h-neg-en-car-duty
+    query: What is the customs duty rate on imported passenger cars?
+    query_language: en
+    tags: [negative]
+    answerable: false
+  - id: h-neg-ar-toy-standards
+    query: ما هي متطلبات مؤسسة المواصفات والمقاييس لاستيراد العاب الاطفال؟
+    query_language: ar
+    tags: [negative]
+    answerable: false
+  - id: h-neg-en-cosmetics-labelling
+    query: What labelling does the Jordan Food and Drug Administration require on imported cosmetics?
+    query_language: en
+    tags: [negative]
+    answerable: false
+  - id: h-neg-ar-sales-tax
+    query: كم تبلغ ضريبة المبيعات العامة على الاجهزة الكهربائية المستوردة؟
+    query_language: ar
+    tags: [negative]
+    answerable: false
+  - id: h-neg-en-eu-agreement
+    query: Rules of origin under the Jordan-EU Association Agreement and the relaxed rules of origin scheme
+    query_language: en
+    tags: [negative]
+    answerable: false
+  - id: h-neg-ar-medicine-registration
+    query: اجراءات تسجيل الادوية البشرية المستوردة لدى المؤسسة العامة للغذاء والدواء
+    query_language: ar
+    tags: [negative]
+    answerable: false
+  - id: h-neg-en-vehicle-age
+    query: Is there a maximum age limit for used vehicles imported into Jordan?
+    query_language: en
+    tags: [negative]
+    answerable: false
+  - id: h-neg-ar-customs-declaration
+    query: ما هي المستندات المطلوبة لتقديم البيان الجمركي في دائرة الجمارك؟
+    query_language: ar
+    tags: [negative]
+    answerable: false

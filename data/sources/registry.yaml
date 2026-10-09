@@ -1,0 +1,95 @@
+# Curated source registry for the shared regulatory knowledge base.
+#
+# Every entry is a real document obtained from an official site; nothing here is generated.
+# Schema: import_compliance_rag.schemas.regulatory.SourceRegistryEntry (unknown keys are rejected).
+#
+# legal_status stays "unknown" until a human verifies, against the Official Gazette or the issuing
+# authority, that the text is current and complete with all amendments. Amendment notes below are
+# taken from the documents' own consolidated-text annotations, not from an independent check.
+#
+# Raw files live in data/sources/raw/<id>/source.pdf (git-ignored). Re-download from official_url
+# and compare the SHA-256 prefix in provenance_note.
+
+- id: mit-import-export-law-21-2001
+  title_original: قانون الاستيراد والتصدير وتعديلاته رقم 21 لسنة 2001
+  title_en: Import and Export Law No. 21 of 2001, as amended (descriptive title)
+  issuing_authority: Ministry of Industry, Trade and Supply (publisher of the consolidated text)
+  original_language: ar
+  official_url: "https://www.mit.gov.jo/ebv4.0/root_storage/ar/eb_list_page/قانون_الاستيراد_و_التصدير_وتعديلاته_رقم_21_لسنة_2001.pdf"
+  discovered_via: https://traderepository.customs.gov.jo/english/
+  document_type: law
+  binding_nature: binding
+  legal_status: unknown
+  status_note: Consolidated text published by the ministry; currency not verified against the Official Gazette.
+  publication_date: 2001-07-01
+  gazette_reference: Official Gazette No. 4494, p. 2453, 1/7/2001
+  amendment_info: The consolidated text annotates amendments by Amending Law No. 18 of 2003. Later amendments, if any, not verified.
+  provenance_note: >-
+    Downloaded from the ministry site during the first working session (2026-10-09; exact time not
+    recorded). SHA-256 prefix 6e9799434dc8. The PDF text layer is corrupted; text is recovered from
+    the embedded fonts and verified against OCR.
+  product_categories: []
+  local_file: mit-import-export-law-21-2001/source.pdf
+
+- id: mit-import-export-licenses-system-114-2004
+  title_original: نظام رخص وبطاقات الاستيراد والتصدير وتعديلاته رقم 114 لسنة 2004
+  title_en: Import and Export Licences and Cards Bylaw No. 114 of 2004, as amended (descriptive title)
+  issuing_authority: Ministry of Industry, Trade and Supply (publisher of the consolidated text)
+  original_language: ar
+  official_url: "https://www.mit.gov.jo/ebv4.0/root_storage/ar/eb_list_page/نظام_رخص_وبطاقات_الاستيراد_والتصدير_و_تعيدلاته_رقم_114_لسنة_2004.pdf"
+  discovered_via: https://traderepository.customs.gov.jo/english/
+  document_type: bylaw
+  binding_nature: binding
+  legal_status: unknown
+  status_note: Issued under Article 12 of Law No. 21 of 2001. Currency not verified against the Official Gazette.
+  publication_date: 2004-09-30
+  gazette_reference: Official Gazette No. 4677, p. 4603, 30/9/2004
+  amendment_info: The consolidated text annotates amendments by Amending Bylaw No. 58 of 2005. Later amendments, if any, not verified.
+  provenance_note: >-
+    Downloaded from the ministry site during the first working session (2026-10-09; exact time not
+    recorded). SHA-256 prefix 66cc2f117a84. The PDF text layer is corrupted; text is recovered from
+    the embedded fonts and verified against OCR.
+  product_categories: []
+  local_file: mit-import-export-licenses-system-114-2004/source.pdf
+
+- id: moa-agriculture-law-13-2015
+  title_original: قانون الزراعة رقم 13 لسنة 2015 وتعديلاته
+  title_en: Agriculture Law No. 13 of 2015, as amended (descriptive title)
+  issuing_authority: Ministry of Agriculture (publisher of the consolidated text)
+  original_language: ar
+  official_url: "http://moa.gov.jo/ebv4.0/root_storage/ar/eb_list_page/قانون_الزراعة_رقم_13_لسنة_2015_وتعديلاته.pdf"
+  discovered_via: https://traderepository.customs.gov.jo/english/
+  document_type: law
+  binding_nature: binding
+  legal_status: unknown
+  status_note: Consolidated text published by the ministry; currency not verified against the Official Gazette.
+  publication_date: 2015-04-16
+  gazette_reference: Official Gazette No. 5337, p. 1868, 16/4/2015
+  amendment_info: >-
+    The consolidated text annotates amendments by Amending Law No. 12 of 2017 and Amending Law No. 2
+    of 2020, and states that it replaced the provisional Agriculture Law No. 44 of 2002. Later
+    amendments, if any, not verified.
+  provenance_note: >-
+    Downloaded from the ministry site during the first working session (2026-10-09; exact time not
+    recorded). SHA-256 prefix d522d79735e9. The PDF text layer is legacy-encoded; text is recovered
+    from the embedded fonts and verified against OCR. Article numbers use Eastern Arabic numerals.
+  product_categories: [agriculture, plants, animals, agricultural_inputs]
+  local_file: moa-agriculture-law-13-2015/source.pdf
+
+- id: ustr-jordan-fta-rules-of-origin
+  title_original: Agreement between the United States of America and the Hashemite Kingdom of Jordan on the Establishment of a Free Trade Area — Annex 2.2, Rules of Origin
+  title_en: US–Jordan FTA, Annex 2.2 Rules of Origin
+  issuing_authority: Office of the United States Trade Representative (publisher of the treaty text)
+  jurisdiction: JO-US
+  original_language: en
+  official_url: https://ustr.gov/sites/default/files/uploads/agreements/fta/jordan/asset_upload_file366_8456.pdf
+  discovered_via: https://traderepository.customs.gov.jo/english/
+  document_type: agreement
+  binding_nature: binding
+  legal_status: unknown
+  status_note: Treaty annex text as published by USTR. Implementing rules and any later modifications not verified.
+  provenance_note: >-
+    Downloaded from ustr.gov during the first working session (2026-10-09; exact time not recorded).
+    SHA-256 prefix 5438c7a9f4b1. Clean PDF text layer.
+  product_categories: []
+  local_file: ustr-jordan-fta-rules-of-origin/source.pdf

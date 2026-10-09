@@ -28,9 +28,16 @@ import re
 import unicodedata
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
+from itertools import pairwise
 
 import pymupdf
 from fontTools.ttLib import TTFont
+from pdfminer.pdfdevice import PDFTextDevice
+from pdfminer.pdfdocument import PDFDocument
+from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
+from pdfminer.pdfpage import PDFPage
+from pdfminer.pdfparser import PDFParser
+from pdfminer.utils import apply_matrix_pt
 
 from import_compliance_rag.text.arabic import ARABIC_LETTER, LATIN_LETTER, normalize_for_retrieval
 
@@ -63,7 +70,7 @@ class GlyphChar:
 class RecoveredPage:
     page_number: int
     lines: list[list[GlyphChar]]
-    decoded_ratio: float  # share of visible characters decoded through an embedded font map
+    decoded_ratio: float  # share of visible characters decoded through a font map or trusted encoding
 
     def text(self, corrections: dict[GlyphKey, str] | None = None) -> str:
         out = []
@@ -101,6 +108,31 @@ class FontRecovery:
     def __init__(self, doc: pymupdf.Document) -> None:
         self.doc = doc
         self._fonts: dict[int, _FontInfo] = {}
+        self._pdfminer_pages: list[PDFPage] | None = None
+        self._rsrcmgr = PDFResourceManager()
+
+    def _unembedded_origins(self, page: pymupdf.Page) -> set[tuple[int, int]]:
+        """Origins (MuPDF page coordinates, rounded) of glyphs drawn with non-embedded fonts.
+
+        Span font names do not identify the font object, and a page can carry an embedded Type0
+        font and a non-embedded simple font under the same name. For equal-width glyphs (all digits
+        in Times) the width check cannot tell them apart; observed in Law 21/2001, clause numbers
+        "2." and "3." drawn with the non-embedded font were read through the embedded one as "0"
+        and "1". The content stream says which font draws each glyph, so it is replayed here.
+        """
+        if self._pdfminer_pages is None:
+            parser = PDFParser(io.BytesIO(self.doc.tobytes()))
+            self._pdfminer_pages = list(PDFPage.create_pages(PDFDocument(parser)))
+        recorder = _GlyphFontRecorder(self._rsrcmgr)
+        PDFPageInterpreter(self._rsrcmgr, recorder).process_page(self._pdfminer_pages[page.number])
+        x0, y0 = page.mediabox.x0, page.mediabox.y0  # pdfminer coordinates are relative to it
+        to_page = page.transformation_matrix
+        origins = set()
+        for x, y, embedded in recorder.glyphs:
+            if not embedded:
+                point = pymupdf.Point(x + x0, y + y0) * to_page
+                origins.add((round(point.x * 2), round(point.y * 2)))
+        return origins
 
     def _font_info(self, xref: int) -> _FontInfo:
         if xref not in self._fonts:
@@ -137,16 +169,23 @@ class FontRecovery:
 
     def recover_page(self, page: pymupdf.Page, page_number: int) -> RecoveredPage:
         fonts: dict[str, list[_FontInfo]] = defaultdict(list)
-        for xref, _ext, _type, base, *_ in page.get_fonts(full=True):
+        substituted: set[str] = set()
+        for xref, ext, _type, base, *_ in page.get_fonts(full=True):
+            if ext == "n/a":
+                substituted.add(base)
             info = self._font_info(xref)
             if info.mapping:
                 fonts[base].append(info)
+        # Text drawn with a non-embedded font comes from its standard encoding and is trusted.
+        unembedded = self._unembedded_origins(page) if substituted else set()
         chars: list[GlyphChar] = []
         decoded = visible = 0
         for span in page.get_texttrace():
-            candidates = fonts.get(span["font"], [])
+            ambiguous = span["font"] in substituted
             previous_from_font = False
             for unicode, gid, origin, bbox in span["chars"]:
+                trusted = ambiguous and _near(origin, unembedded)
+                candidates = [] if trusted else fonts.get(span["font"], [])
                 if gid < 0:
                     # Continuation of a multi-character ToUnicode entry (e.g. the alef MuPDF emits
                     # after a lam-alef ligature). Redundant when the ligature was font-decoded.
@@ -160,10 +199,31 @@ class FontRecovery:
                 previous_from_font = key is not None
                 if not char.isspace():
                     visible += 1
-                    decoded += key is not None
+                    decoded += key is not None or trusted
                 chars.append(GlyphChar(char, key, origin[0], origin[1]))
-        lines = [_logical_order(line) for line in _group_lines(chars)]
+        lines = _reflow_definition_columns([_logical_order(line) for line in _group_lines(chars)])
         return RecoveredPage(page_number, lines, round(decoded / visible, 4) if visible else 0.0)
+
+
+class _GlyphFontRecorder(PDFTextDevice):
+    """Records each glyph drawn by the content stream with whether its font program is embedded."""
+
+    def __init__(self, rsrcmgr: PDFResourceManager) -> None:
+        super().__init__(rsrcmgr)
+        self.glyphs: list[tuple[float, float, bool]] = []  # (x, y) in PDF user space, embedded
+
+    def render_char(self, matrix, font, fontsize, scaling, rise, cid, ncs, graphicstate) -> float:  # noqa: ANN001
+        x, y = apply_matrix_pt(matrix, (0, rise))
+        descriptor = getattr(font, "descriptor", None) or {}
+        embedded = any(k in descriptor for k in ("FontFile", "FontFile2", "FontFile3"))
+        self.glyphs.append((x, y, embedded))
+        return font.char_width(cid) * fontsize * scaling
+
+
+def _near(origin: tuple[float, float], keys: set[tuple[int, int]]) -> bool:
+    """Whether a glyph origin matches a recorded one (half-point grid, tolerant to rounding)."""
+    kx, ky = round(origin[0] * 2), round(origin[1] * 2)
+    return any((kx + dx, ky + dy) in keys for dx in (-1, 0, 1) for dy in (-1, 0, 1))
 
 
 def _group_lines(chars: list[GlyphChar]) -> list[list[GlyphChar]]:
@@ -176,9 +236,159 @@ def _group_lines(chars: list[GlyphChar]) -> list[list[GlyphChar]]:
     return lines
 
 
+# Definition articles are often laid out as a borderless table: term | ":" | definition, with the
+# term vertically centred on its (possibly multi-line) definition. Read line by line, the term lands
+# between definition lines ("def line 1 / term : / def line 2"). The colons sit in one aligned
+# column, which is used to rebuild "term : definition" in reading order.
+_MIN_ALIGNED_COLONS = 3
+_COLON_X_TOLERANCE = 2.5
+_COLUMN_GAP = 3.0  # definition text must end at least this far left of the colon column
+_BLOCK_GAP_FACTOR = 1.2  # a vertical step above this multiple of the line pitch starts a new row
+# Minimum distance (pt, between glyph origins) from the last definition glyph to the first term glyph
+# on a line without the row's colon. Measured: ~17-23 pt in tables, 3-8 pt between words of prose.
+_MIN_TERM_COLUMN_GAP = 10.0
+
+
+def _reflow_definition_columns(lines: list[list[GlyphChar]]) -> list[list[GlyphChar]]:
+    colon_xs = sorted(c.x for line in lines for c in line if c.char == ":")
+    column = _densest(colon_xs, _COLON_X_TOLERANCE)
+    if column is None:
+        return lines
+    count, col_x = column
+    if count < _MIN_ALIGNED_COLONS:
+        return lines
+
+    def is_column_colon(c: GlyphChar) -> bool:
+        return c.char == ":" and abs(c.x - col_x) <= _COLON_X_TOLERANCE
+
+    def split(line: list[GlyphChar]) -> tuple[list[GlyphChar], list[GlyphChar]] | None:
+        """(term part incl. colon, definition part) when the line fits the table, else None."""
+        term = [c for c in line if c.x >= col_x - _COLON_X_TOLERANCE]
+        definition = [c for c in line if c.x < col_x - _COLON_X_TOLERANCE]
+        visible_term = [c for c in term if not c.char.isspace()]
+        visible_def = [c for c in definition if not c.char.isspace()]
+        if visible_def and max(c.x for c in visible_def) > col_x - _COLUMN_GAP - _COLON_X_TOLERANCE:
+            return None
+        # Text on both sides of the column without the row's colon is either a wrapped term next to
+        # its definition (term column well to the right) or full-width prose that merely has a word
+        # gap near the column (glyph origins only a few points apart).
+        if visible_term and visible_def and not any(is_column_colon(c) for c in term):
+            if min(c.x for c in visible_term) - max(c.x for c in visible_def) < _MIN_TERM_COLUMN_GAP:
+                return None
+        return term, definition
+
+    out: list[list[GlyphChar]] = []
+    i = 0
+    while i < len(lines):
+        # A table region is a run of lines that all fit the column layout and contains aligned colons.
+        j = i
+        while j < len(lines) and split(lines[j]) is not None:
+            j += 1
+        region = lines[i:j]
+        colon_lines = [ln for ln in region if any(is_column_colon(c) for c in ln)]
+        # The staggered layout shows itself through lines holding only "term :" (no definition text).
+        # Without one, colons that merely line up (similar term lengths) are left alone.
+        term_only = [ln for ln in colon_lines if not any(not c.char.isspace() for c in split(ln)[1])]
+        if len(colon_lines) >= 2 and term_only:
+            out.extend(_reflow_region(region, col_x, split))
+            i = j
+        else:
+            out.append(lines[i])
+            i += 1
+    return out
+
+
+def _densest(values: list[float], tolerance: float) -> tuple[int, float] | None:
+    best: tuple[int, float] | None = None
+    for k, v in enumerate(values):
+        n = sum(1 for w in values[k:] if w - v <= 2 * tolerance)
+        if best is None or n > best[0]:
+            best = (n, v + tolerance)
+    return best
+
+
+def _reflow_region(region, col_x, split) -> list[list[GlyphChar]]:  # noqa: ANN001
+    visible = lambda chars: any(not c.char.isspace() for c in chars)  # noqa: E731
+    rows = [(line[0].y if line else 0.0, *split(line)) for line in region]
+    # Line pitch from definition lines only: a term centred between two of them sits at half pitch.
+    ys = [y for y, _t, d in rows if visible(d)]
+    steps = [b - a for a, b in pairwise(ys) if b - a > _LINE_TOLERANCE]
+    if not steps:
+        return region
+    pitch = min(steps)
+
+    def has_colon(block: list[tuple[float, list[GlyphChar]]], chars: list[GlyphChar]) -> bool:
+        return any(c.char == ":" for c in chars) and any(c.char == ":" for _y, cs in block for c in cs)
+
+    def blocks(
+        items: list[tuple[float, list[GlyphChar]]], one_colon: bool = False
+    ) -> list[list[tuple[float, list[GlyphChar]]]]:
+        grouped: list[list[tuple[float, list[GlyphChar]]]] = []
+        for y, chars in items:
+            if (
+                grouped
+                and y - grouped[-1][-1][0] <= pitch * _BLOCK_GAP_FACTOR
+                and not (one_colon and has_colon(grouped[-1], chars))
+            ):
+                grouped[-1].append((y, chars))
+            else:
+                grouped.append([(y, chars)])
+        return grouped
+
+    def_blocks = blocks([(y, d) for y, _t, d in rows if visible(d)])
+    term_blocks = blocks([(y, t) for y, t, _d in rows if visible(t)], one_colon=True)
+    centre = lambda block: (block[0][0] + block[-1][0]) / 2  # noqa: E731
+
+    assigned: dict[int, list[GlyphChar]] = {}
+    orphans: list[tuple[float, list[GlyphChar]]] = []
+    for term in term_blocks:
+        tc = centre(term)
+        candidates = [
+            k for k, block in enumerate(def_blocks)
+            if block[0][0] - pitch / 2 <= tc <= block[-1][0] + pitch / 2 and k not in assigned
+        ]  # fmt: skip
+        if not candidates:
+            orphans.extend(term)
+            continue
+        k = min(candidates, key=lambda k: abs(centre(def_blocks[k]) - tc))
+        assigned[k] = _join_term(term)
+
+    out: list[tuple[float, list[GlyphChar]]] = list(orphans)
+    for k, block in enumerate(def_blocks):
+        first_y, first = block[0]
+        if k in assigned:
+            first = assigned[k] + [GlyphChar(" ", None, col_x, first_y)] + first
+        out.append((first_y, first))
+        out.extend(block[1:])
+    return [chars for _y, chars in sorted(out, key=lambda item: item[0])]
+
+
+def _join_term(term: list[tuple[float, list[GlyphChar]]]) -> list[GlyphChar]:
+    """Concatenate a (possibly wrapped) term top to bottom and put its colon at the end."""
+    words: list[GlyphChar] = []
+    colon: list[GlyphChar] = []
+    for _y, chars in term:
+        part = [c for c in chars if c.char != ":"]
+        colon += [c for c in chars if c.char == ":"]
+        while part and part[-1].char.isspace():
+            part.pop()
+        while part and part[0].char.isspace():
+            part.pop(0)
+        if part:
+            if words:
+                words.append(GlyphChar(" ", None, part[0].x, part[0].y))
+            words.extend(part)
+    if colon:
+        words += [GlyphChar(" ", None, colon[0].x, colon[0].y), colon[0]]
+    return words
+
+
 def _logical_order(line: list[GlyphChar]) -> list[GlyphChar]:
-    text = "".join(c.char for c in line)
-    rtl = len(ARABIC_LETTER.findall(text)) >= len(LATIN_LETTER.findall(text))
+    # Font-decoded glyphs are often presentation forms (U+FB50..U+FEFF); fold them before counting.
+    text = unicodedata.normalize("NFKC", "".join(c.char for c in line))
+    arabic = len(ARABIC_LETTER.findall(text))
+    # A line without Arabic letters (e.g. a date "9/ 5/ 2001") is laid out left-to-right.
+    rtl = arabic > 0 and arabic >= len(LATIN_LETTER.findall(text))
     ordered = sorted(line, key=lambda c: -c.x if rtl else c.x)
     if not rtl:
         return ordered

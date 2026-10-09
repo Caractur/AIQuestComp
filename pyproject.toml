@@ -1,7 +1,7 @@
 [project]
 name = "import-compliance-rag"
 version = "0.1.0"
-description = "Add your description here"
+description = "Evidence-grounded bilingual (Arabic/English) regulatory RAG for importing goods into Jordan"
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.20.0",
@@ -43,3 +43,22 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.16.10",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "integration: needs the PostgreSQL test database (ICR_TEST_DATABASE_URL)",
+    "real_sources: needs the downloaded source PDFs in data/sources/raw",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E731"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E501"]  # long Arabic test-data strings read better unwrapped

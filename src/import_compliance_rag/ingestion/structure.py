@@ -27,7 +27,11 @@ _EN_SECTION = re.compile(r"^\s*(ANNEX|CHAPTER|SECTION|PART)\s+[\w.\-]+.*$", re.I
 _EN_PARAGRAPH = re.compile(r"^\s*(\d{1,2})\.\s*(.*)$")
 _CLEAN_NUMBER = re.compile(r"^[(\[]?\s*(\d{1,3})\s*[)\]]?\s*(مكرر[ةه]?)?\s*[:.\-–]?$")
 _NOISE = re.compile(r"[ًّْ-ِ'\"“”’‘*>|/\\؟?!,،.:؛;ْ]")
-_AMENDMENT_NOTE = re.compile(r"^\s*-?\s*هكذا\s+اصبحت")
+# Consolidated texts annotate amendments after the article ("-هكذا اصبحت هذه المادة ..."), often
+# quoting the superseded wording. The marker may start with a hyphen or a soft hyphen (U+00AD), and
+# the Agriculture Law precedes it with a "تعديلات المادة :" line.
+_AMENDMENT_NOTE = re.compile(r"^\s*[-\u00ad–]?\s*هكذا\s+اصبحت")
+_AMENDMENT_HEADER = re.compile(r"^\s*تعديلات\s+الماد[ةه]\s*:?\s*$")
 _DEFINITIONS_MARKERS = (
     "يكون للكلمات والعبارات التالية",
     "المعاني المخصصة لها",
@@ -62,6 +66,9 @@ class Segment:
     lines: list[Line] = field(default_factory=list)
     is_definitions: bool = False
     amendment_notes: list[str] = field(default_factory=list)
+    # Lines from the first amendment annotation to the end of the segment. They are not current law
+    # (they can quote superseded wording) and are kept out of ``lines``.
+    history: list[Line] = field(default_factory=list)
 
     @property
     def text(self) -> str:
@@ -69,11 +76,13 @@ class Segment:
 
     @property
     def page_start(self) -> int | None:
-        return self.lines[0].page if self.lines else None
+        lines = self.lines or self.history
+        return lines[0].page if lines else None
 
     @property
     def page_end(self) -> int | None:
-        return self.lines[-1].page if self.lines else None
+        lines = self.history or self.lines
+        return lines[-1].page if lines else None
 
 
 @dataclass
@@ -90,7 +99,7 @@ def parse_structure(pages: list[tuple[int, str]], language: Language) -> ParsedS
         segments, warnings = _parse_arabic(lines)
     for segment in segments:
         _annotate(segment)
-    return ParsedStructure([s for s in segments if s.lines or s.raw_heading], warnings)
+    return ParsedStructure([s for s in segments if s.lines or s.history or s.raw_heading], warnings)
 
 
 def _parse_arabic(lines: list[Line]) -> tuple[list[Segment], list[str]]:
@@ -233,12 +242,16 @@ def _append_body(segment: Segment, line: Line) -> None:
 
 
 def _annotate(segment: Segment) -> None:
+    for i, line in enumerate(segment.lines):
+        if _AMENDMENT_NOTE.match(line.text) or _AMENDMENT_HEADER.match(line.text):
+            segment.lines, segment.history = segment.lines[:i], segment.lines[i:]
+            break
+    segment.amendment_notes = [line.text for line in segment.history if _AMENDMENT_NOTE.match(line.text)]
     text = segment.text
     lowered = text.lower()
     segment.is_definitions = any(marker in lowered for marker in _DEFINITIONS_MARKERS[:2]) or (
         segment.kind != "preamble" and any(m in lowered for m in _DEFINITIONS_MARKERS[2:4])
     )
-    segment.amendment_notes = [line.text for line in segment.lines if _AMENDMENT_NOTE.match(line.text)]
     # A short first line ending with ':' directly under an article heading is the article's title
     # (e.g. "الانتاج النباتي :"), not its first clause.
     if segment.kind == "article" and segment.lines:
@@ -268,7 +281,7 @@ def split_clauses(lines: list[Line]) -> tuple[list[Line], list[list[Line]]]:
     lead: list[Line] = []
     clauses: list[list[Line]] = []
     for line in lines:
-        if _looks_like_clause(line.text) or _AMENDMENT_NOTE.match(line.text):
+        if _looks_like_clause(line.text):
             clauses.append([line])
         elif clauses:
             clauses[-1].append(line)
@@ -291,8 +304,14 @@ def find_cross_references(text: str) -> list[tuple[str, str, bool]]:
     legislation names the other instrument explicitly when referring outside itself.
     """
     refs = []
-    for match in _ARTICLE_REFERENCE.finditer(text):
+    matches = list(_ARTICLE_REFERENCE.finditer(text))
+    for i, match in enumerate(matches):
         number = match.group(1) or match.group(3)
-        external_hint = re.search(r"من\s+(?:قانون|نظام)\s+(?!هذا)", text[match.end() : match.end() + 30])
+        if match.group(2) or match.group(4):  # "من هذا القانون" / "of this Agreement"
+            refs.append((match.group(0).strip(), normalize_digits(number), True))
+            continue
+        # Look for "من قانون ..." right after the reference, but not past the next reference.
+        end = min(match.end() + 30, matches[i + 1].start() if i + 1 < len(matches) else len(text))
+        external_hint = re.search(r"من\s+(?:قانون|نظام)\s+(?!هذا)", text[match.end() : end])
         refs.append((match.group(0).strip(), normalize_digits(number), external_hint is None))
     return refs

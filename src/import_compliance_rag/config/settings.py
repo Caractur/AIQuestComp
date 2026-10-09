@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,6 +12,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class OcrSettings(BaseModel):
     tesseract_cmd: str = "tesseract"
+    # When set, tesseract runs inside this container image via `container_engine` instead of
+    # `tesseract_cmd` (portable across Linux, macOS and Windows; see docker/ocr.Containerfile).
+    container_image: str | None = None
+    container_engine: str = "docker"
     dpi: int = Field(300, ge=150, le=600)
     languages: str = "ara+eng"  # used when the document language is unknown
     page_segmentation_mode: int = 6
@@ -36,6 +41,9 @@ class TextQualitySettings(BaseModel):
 
 
 class RetrievalSettings(BaseModel):
+    # dense | hybrid | lexical. Dense + article-reference resolution measured best on the draft
+    # evaluation sets (docs/architecture.md §5); hybrid fusion hurt paraphrased questions.
+    default_mode: Literal["dense", "hybrid", "lexical"] = "dense"
     embedding_model: str = "BAAI/bge-m3"
     embedding_device: str = "cpu"
     embedding_batch_size: int = 8
@@ -43,6 +51,10 @@ class RetrievalSettings(BaseModel):
     dense_top_k: int = 40
     lexical_top_k: int = 40
     rrf_k: int = 60
+    # Weight of the lexical ranking relative to the dense one in fusion (see docs/architecture.md §5).
+    lexical_weight: float = Field(1.0, ge=0.0)
+    # Resolve explicit references such as "المادة 13 من نظام رخص ..." to the named article.
+    resolve_article_references: bool = True
     final_top_k: int = 10
     expand_related: bool = True
     arabic_normalize_ta_marbuta: bool = True

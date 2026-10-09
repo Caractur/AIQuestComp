@@ -91,6 +91,9 @@ class ChunkType(StrEnum):
     DEFINITIONS = "definitions"
     TABLE = "table"
     TEXT = "text"  # unstructured fallback
+    # Amendment annotations of a consolidated text. They may quote superseded wording, so they are
+    # excluded from retrieval unless history is requested explicitly.
+    AMENDMENT_HISTORY = "amendment_history"
 
 
 class SourceRegistryEntry(BaseModel):
@@ -167,8 +170,10 @@ class ChunkRecord(BaseModel):
     version_id: int | None = None
     chunk_type: ChunkType
     article_number: str | None = None
+    number_source: str | None = Field(None, description="'parsed' or 'inferred' (see ingestion.structure)")
     section_path: list[str] = Field(default_factory=list)
     heading: str | None = None
+    definition_term: str | None = None
     page_start: int | None = None
     page_end: int | None = None
     language: Language
@@ -178,8 +183,21 @@ class ChunkRecord(BaseModel):
     part_count: int = 1
     parent_key: str | None = None
     cross_references: list[CrossReference] = Field(default_factory=list)
+    caveats: list[str] = Field(default_factory=list)
     content_sha256: str
     token_count: int
+
+    @property
+    def key(self) -> str:
+        """The version-independent part of the id (e.g. ``art-12.p2``)."""
+        return self.id.split("#", 1)[1]
+
+    @property
+    def embedding_text(self) -> str:
+        """Text used for embeddings and lexical indexing: context header plus original text."""
+        if not self.context_header:
+            return self.text_original
+        return f"{self.context_header}\n{self.text_original}"
 
 
 class Citation(BaseModel):
@@ -211,8 +229,16 @@ class RetrievalSignal(BaseModel):
     dense_score: float | None = None
     lexical_rank: int | None = None
     lexical_score: float | None = None
+    lexical_rank_imputed: bool = Field(
+        False,
+        description="The chunk is in another language than the query, so lexical matching could not "
+        "apply; its dense rank stood in for the lexical rank during fusion.",
+    )
     fused_score: float
     rerank_score: float | None = None
+    exact_reference: bool = Field(
+        False, description="The query named this article and instrument explicitly; ranked first."
+    )
     matched_queries: list[str] = Field(default_factory=list)
 
 

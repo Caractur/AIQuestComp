@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv
 import logging
+import os
 import shutil
 import subprocess
 import tempfile
@@ -17,6 +18,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pymupdf
+
+from import_compliance_rag.config.settings import OcrSettings
 
 log = logging.getLogger(__name__)
 
@@ -40,8 +43,12 @@ class TesseractOcr:
         dpi: int = 300,
         timeout: int = 300,
         page_segmentation_mode: int = 6,
+        container_image: str | None = None,
+        container_engine: str = "docker",
     ) -> None:
         self.command = command
+        self.container_image = container_image
+        self.container_engine = container_engine
         self.languages = languages
         self.dpi = dpi
         self.timeout = timeout
@@ -50,7 +57,21 @@ class TesseractOcr:
         # and the first line of Article 8 of Import and Export Law No. 21 of 2001).
         self.page_segmentation_mode = page_segmentation_mode
 
+    @classmethod
+    def from_settings(cls, settings: OcrSettings) -> TesseractOcr:
+        return cls(
+            settings.tesseract_cmd,
+            languages=settings.languages,
+            dpi=settings.dpi,
+            timeout=settings.timeout_seconds,
+            page_segmentation_mode=settings.page_segmentation_mode,
+            container_image=settings.container_image,
+            container_engine=settings.container_engine,
+        )
+
     def resolved_command(self) -> str | None:
+        if self.container_image:
+            return shutil.which(self.container_engine)
         path = Path(self.command)
         if path.is_file():
             return str(path.resolve())
@@ -77,8 +98,8 @@ class TesseractOcr:
         if command is None:
             raise OcrUnavailableError(
                 f"OCR command '{self.command}' not found. Install tesseract with Arabic data "
-                "(e.g. `sudo dnf install tesseract tesseract-langpack-ara`) or set "
-                "ICR_OCR__TESSERACT_CMD=scripts/tesseract_container.sh."
+                "(e.g. `sudo dnf install tesseract tesseract-langpack-ara`) or build the OCR image "
+                "and set ICR_OCR__CONTAINER_IMAGE=localhost/icr-tesseract:latest."
             )
         with tempfile.TemporaryDirectory(prefix="icr-ocr-") as tmp:
             work = Path(tmp)
@@ -89,8 +110,9 @@ class TesseractOcr:
                 names.append(name)
             (work / "images.txt").write_text("\n".join(names) + "\n", encoding="utf-8")
             args = [
-                command, "images.txt", "out", "-l", languages or self.languages,
-                "--psm", str(page_segmentation_mode or self.page_segmentation_mode), "--dpi", str(self.dpi), "txt", "tsv",
+                *self._invocation(command, work), "images.txt", "out", "-l", languages or self.languages,
+                "--psm", str(page_segmentation_mode or self.page_segmentation_mode),
+                "--dpi", str(self.dpi), "txt", "tsv",
             ]  # fmt: skip
             log.info("ocr.start", extra={"images": len(images)})
             result = subprocess.run(
@@ -114,6 +136,15 @@ class TesseractOcr:
             mean = round(sum(confs) / len(confs), 2) if confs else None
             results.append(OcrResult(texts[i], mean, len(confs)))
         return results
+
+    def _invocation(self, command: str, work: Path) -> list[str]:
+        """The argv prefix that runs tesseract with ``work`` as its working directory."""
+        if not self.container_image:
+            return [command]
+        args = [command, "run", "--rm", "--network=none", "-v", f"{work}:/work", "-w", "/work"]
+        if hasattr(os, "getuid"):  # keep output files owned by the caller on Linux/macOS
+            args += ["--user", f"{os.getuid()}:{os.getgid()}"]
+        return [*args, self.container_image]
 
 
 def _image_word_stats(tsv_path: Path) -> dict[int, list[float]]:

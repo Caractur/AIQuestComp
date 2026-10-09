@@ -209,7 +209,7 @@ def serve(
     rerank: Annotated[bool, typer.Option(help="Use the configured reranker (slow on CPU).")] = False,
     test_db: TestDb = False,
 ) -> None:
-    """Serve the ImportReady UI and a local read-only search API."""
+    """Serve the MUTABIQ UI and a local read-only search API."""
     from import_compliance_rag.web.server import Service
     from import_compliance_rag.web.server import serve as make_server
 
@@ -219,7 +219,7 @@ def serve(
     typer.echo("loading retrieval models ...")
     service = Service(settings, url, _retriever(settings, model, settings.retrieval.default_mode, rerank))
     server = make_server(service, web_dir.resolve(), host, port)
-    typer.echo(f"ImportReady UI on http://{host}:{port}/  (Ctrl+C to stop)")
+    typer.echo(f"MUTABIQ UI on http://{host}:{port}/  (Ctrl+C to stop)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

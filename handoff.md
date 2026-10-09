@@ -102,7 +102,7 @@ Package `src/import_compliance_rag/`. `uv run ruff check src` passes. **`uv run 
 | Evaluation | `evaluation/dataset.py`, `metrics.py`, `runner.py`; `data/eval/retrieval_cases.yaml`, `retrieval_cases_hard.yaml` | Done. **37 + 34 cases, all `draft`.** Tags, unanswerable cases and score-separation AUROC are supported. |
 | CLI | `cli.py` (`import-compliance-rag …`) | `db-init`, `sources-sync`, `ingest`, `embed`, `search`, `eval-retrieval`. |
 | Docs | `README.md`, `docs/architecture.md` | Done. |
-| Web UI | `web/` (static UI), `src/import_compliance_rag/web/server.py` + `serve` CLI command | **ImportReady UI** with Overview, live Ask, a synthetic Dossier walkthrough, and Sources. Styled after the ImportReady deck, with an original animated guide character (built with the playful-web-experiences skill). Local read-only API on 127.0.0.1. Tests: `node --test web/js/core.test.mjs` (11), `tests/unit/test_web_server.py`. Verified in a browser at 1366 px and 375 px. |
+| Web UI | `web/` (static UI), `src/import_compliance_rag/web/server.py` + `serve` CLI command | **MUTABIQ UI**, matching the MUTABIQ deck: Overview, an illustrative Assessment (DEMO-X1 sample data; TRC not indexed, so no real clauses are cited), live Evidence search, and Knowledge base. Original guide character built from the MUTABIQ mark (playful-web-experiences skill). Local read-only API on 127.0.0.1. Tests: `node --test web/js/core.test.mjs` (14), `tests/unit/test_web_server.py`. Checked with headless Chrome at 1280 and 375 px (layout, overflow, interactions, transitions, reduced motion, offline states) and WCAG AA contrast. |
 
 The dev database `icr` contains the ingested corpus with bge-m3 embeddings. Eval runs are in
 `data/eval/runs/` (git-ignored).

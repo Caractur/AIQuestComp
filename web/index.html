@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="ImportReady: find the Jordanian import provision that applies, with its article, page and source, in Arabic or English.">
-  <meta name="color-scheme" content="dark">
-  <title>ImportReady</title>
-  <link rel="preload" href="fonts/CormorantGaramond-500.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="fonts/WorkSans-400.ttf" as="font" type="font/ttf" crossorigin>
+  <meta name="description" content="MUTABIQ: every requirement, backed by evidence. Regulatory compliance and application preparation for products entering the Jordanian market.">
+  <meta name="theme-color" content="#0b2440">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>MUTABIQ</title>
+  <link rel="preload" href="fonts/IBMPlexSans-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/IBMPlexSans-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="js/app.mjs"></script>
 </head>
@@ -16,13 +18,13 @@
 
   <header class="site-header">
     <div class="wrap header-row">
-      <a class="brand" href="#/" data-route-link aria-label="ImportReady, overview">
-        <svg class="brand-mark" viewBox="0 0 40 44" aria-hidden="true" focusable="false">
-          <rect class="mark-back" x="10" y="2" width="26" height="34" rx="6" transform="rotate(8 23 19)"/>
-          <path class="mark-front" d="M8 8h16l8 8v20a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z"/>
-          <path class="mark-fold" d="M24 8v6a2 2 0 0 0 2 2h6z"/>
+      <a class="brand" href="#/" data-route-link aria-label="MUTABIQ, overview">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <rect class="mark-tile" width="40" height="40" rx="10"/>
+          <circle class="mark-dot" cx="12" cy="14" r="3"/><rect class="mark-bar" x="18" y="11.5" width="13" height="5" rx="2.5"/>
+          <path class="mark-check" d="M10 21.5Q10 27.5 16 27.5H30"/>
         </svg>
-        <span>ImportReady</span>
+        <span class="wordmark">MUTABIQ</span><span class="wordmark-ar" lang="ar" dir="rtl">مُطابِق</span>
       </a>
       <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
         <span class="menu-icon" aria-hidden="true"></span><span class="menu-label">Menu</span>
@@ -30,9 +32,9 @@
       <nav id="site-nav" class="site-nav" aria-label="Main">
         <ul>
           <li><a href="#/" data-route-link data-route="home">Overview</a></li>
-          <li><a href="#/ask" data-route-link data-route="ask">Ask</a></li>
-          <li><a href="#/dossier" data-route-link data-route="dossier">Dossier</a></li>
-          <li><a href="#/sources" data-route-link data-route="sources">Sources</a></li>
+          <li><a href="#/assessment" data-route-link data-route="assessment">Assessment</a></li>
+          <li><a href="#/ask" data-route-link data-route="ask">Evidence search</a></li>
+          <li><a href="#/sources" data-route-link data-route="sources">Knowledge base</a></li>
         </ul>
         <button class="motion-toggle" type="button" aria-pressed="false">
           <span class="motion-dot" aria-hidden="true"></span><span class="motion-label">Pause motion</span>
@@ -44,7 +46,7 @@
   <div class="stage">
     <main id="main" class="route" tabindex="-1">
       <noscript>
-        <div class="wrap"><p class="lede">ImportReady needs JavaScript to search the regulations. The sources are listed in <code>data/sources/registry.yaml</code>.</p></div>
+        <div class="wrap"><p class="lede">MUTABIQ needs JavaScript to run. The knowledge base is listed in <code>data/sources/registry.yaml</code>.</p></div>
       </noscript>
     </main>
     <div class="cover" aria-hidden="true" hidden>
@@ -58,8 +60,15 @@
 
   <footer class="site-footer">
     <div class="wrap footer-row">
-      <p><span class="serif-italic">ImportReady</span> · AI Quest Hackathon, Jordan</p>
-      <p class="footer-note">Evidence search prototype. Not legal advice: the legal status of every source is still unverified.</p>
+      <p class="footer-brand">
+        <svg class="brand-mark small" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <rect class="mark-tile" width="40" height="40" rx="10"/>
+          <circle class="mark-dot" cx="12" cy="14" r="3"/><rect class="mark-bar" x="18" y="11.5" width="13" height="5" rx="2.5"/>
+          <path class="mark-check" d="M10 21.5Q10 27.5 16 27.5H30"/>
+        </svg>
+        <strong>MUTABIQ</strong> · Team ZAA · AI Quest 2026
+      </p>
+      <p class="footer-note">MUTABIQ prepares the file. The authority makes the decision. Prototype: not legal advice, and the legal status of every source is still unverified.</p>
     </div>
   </footer>
 </body>

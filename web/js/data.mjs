@@ -1,5 +1,6 @@
 // Static content. Registry entries mirror data/sources/registry.yaml and are used only when the
 // local service is not running; live data from /api/sources takes precedence.
+// Figures quoted from the MUTABIQ deck keep the deck's own source attributions.
 
 export const EXAMPLE_QUERIES = [
   { text: 'ما هي رسوم اصدار رخصة الاستيراد؟', lang: 'ar' },
@@ -8,11 +9,43 @@ export const EXAMPLE_QUERIES = [
   { text: 'Can goods pass through a third country and still get FTA treatment?', lang: 'en' },
 ];
 
+export const REGULATORS = [
+  { name: 'TRC', area: 'Telecom devices' },
+  { name: 'JSMO', area: 'Standards & conformity' },
+  { name: 'JFDA', area: 'Food, drugs & cosmetics' },
+  { name: 'Jordan Customs', area: 'Clearance & declarations' },
+  { name: 'Ministry of Agriculture', area: 'Plant & animal products' },
+];
+
+export const QUESTIONS = [
+  'Which rules apply to this product?',
+  'Which evidence proves each requirement?',
+  'What is missing or inconsistent?',
+  'How do we fill the official application?',
+];
+
+export const STEPS = [
+  { n: '01', icon: 'box', title: 'Describe the product', text: 'Link, specs, any evidence' },
+  { n: '02', icon: 'search', title: 'Find the applicable rules', text: 'From official regulations' },
+  { n: '03', icon: 'check', title: 'Check each requirement', text: 'Against its evidence' },
+  { n: '04', icon: 'list', title: 'Explain every finding', text: 'With the exact source' },
+  { n: '05', icon: 'folder', title: 'Prepare the application', text: 'Ready for review' },
+];
+
+export const SAFEGUARDS = [
+  { icon: 'book', title: 'No source, no finding', text: 'Every result links to an exact article or clause.' },
+  { icon: 'list', title: 'Fixed rules for clear checks', text: 'Presence of a document or matching model numbers is checked by code.' },
+  { icon: 'question', title: '“Needs verification”, not guesses', text: 'Uncertain items are flagged for a human.' },
+  { icon: 'dashed', title: 'Missing ≠ non-compliant', text: 'Absent evidence is reported as a gap, not a violation.' },
+  { icon: 'sign', title: 'Human review & signature', text: 'The applicant confirms every field and signs.' },
+  { icon: 'bank', title: 'The authority decides', text: 'MUTABIQ never issues approvals or certificates.' },
+];
+
 export const NOT_COVERED = [
-  { title: 'Customs Law and the customs tariff', why: 'Duty rates, classification and declarations are not in the corpus yet.' },
-  { title: 'JSMO technical regulations', why: 'Standards and conformity requirements for specific product families.' },
-  { title: 'JFDA food, drug and cosmetics requirements', why: 'Registration and labelling rules for regulated consumer goods.' },
-  { title: 'Other trade agreements', why: 'Only the US–Jordan FTA rules of origin are included.' },
+  { title: 'TRC Instructions No. 2 of 2025 and annexes', why: 'The deck’s trial scope (smartphone type approval). Not indexed in this prototype yet, so the assessment demo uses illustrative requirements.', trial: true },
+  { title: 'Customs Law and the customs tariff', why: 'Duty rates, classification and declarations.' },
+  { title: 'JSMO technical regulations', why: 'Standards and conformity requirements for product families.' },
+  { title: 'JFDA requirements', why: 'Registration and labelling rules for food, drugs and cosmetics.' },
 ];
 
 export const REGISTRY_FALLBACK = [

@@ -172,6 +172,7 @@ Handler.extensions_map = {
     ".mjs": "text/javascript",
     ".js": "text/javascript",
     ".ttf": "font/ttf",
+    ".woff2": "font/woff2",
 }
 
 

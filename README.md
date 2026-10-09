@@ -70,36 +70,41 @@ Search defaults to dense retrieval (bge-m3) with explicit article-reference look
 
 Set `HF_HUB_OFFLINE=1` once the model is in the Hugging Face cache to avoid network calls.
 
-## Web UI (ImportReady)
+## Web UI (MUTABIQ)
 
 ```bash
 uv run import-compliance-rag serve        # http://127.0.0.1:8765/ (loads bge-m3 first, ~10 s)
 ```
 
 A static front end in `web/` (plain HTML, CSS and ES modules; no build step), served together with a
-read-only local JSON API (`/api/health`, `/api/search`, `/api/sources`) bound to 127.0.0.1.
+read-only local JSON API (`/api/health`, `/api/search`, `/api/sources`) bound to 127.0.0.1. It follows
+the MUTABIQ deck ("Every requirement, backed by evidence." / كل متطلب، له دليل.).
 
-* **Overview**: what works today and the proposed dossier workflow.
-* **Ask**: live evidence search. Results show the original provisions with citations, nest the
-  definitions and referenced articles they rely on, and state caveats; nothing is generated. Shared
+* **Overview**: the deck's story: problem, five-step solution, two inputs and two outputs, trust by
+  design, and what this prototype does today versus what is illustrated.
+* **Assessment**: the technical trial as an interactive flow (Inputs, Findings, Application) for the
+  fictional DemoTel DEMO-X1 smartphone. **Illustrative**: sample data, and placeholder requirements for
+  the TRC trial scope. TRC Instructions No. 2 of 2025 are not in the knowledge base, so no finding cites a
+  real clause. Uses the deck's statuses: Supported, Missing evidence, Conflict, Needs verification,
+  Not applicable.
+* **Evidence search**: live retrieval over the knowledge base, with the original provisions,
+  citations, nested definitions and referenced articles, and caveats; nothing is generated. Shared
   links re-run the search (`#/ask?q=...`).
-* **Dossier**: an interactive walkthrough of the proposed workflow with a *synthetic* kettle
-  shipment (labelled as such). No real document or requirement is evaluated.
-* **Sources**: the registered instruments (live from the database, or from the registry file
-  when the service is down) and the topics not covered yet.
+* **Knowledge base**: the indexed instruments (live from the database, or from the registry file when
+  the service is down), what is built versus planned, and the texts not indexed yet (TRC first).
 
-Design: the "Soft Editorial / Workflow Relief" palette and type of the ImportReady deck (Cormorant
-Garamond + Work Sans, self-hosted from `web/fonts`, both SIL OFL), with an original paper-sheet guide
-character whose prop matches each page (wave, magnifier, stamp, shelf). Page changes use a short
-covered transition (about 0.6 s) that the latest click always wins, with a timeout fallback.
-Reduced-motion preferences, hidden tabs and the header's *Pause motion* control skip or stop
-decorative motion. The UI must be served over HTTP: ES modules do not load from `file://`.
+Design: the deck's palette (navy `#0b2440`, teal `#17b8a6`, gold `#e3b04b`, light `#f4f7f6`), IBM Plex
+Sans / Sans Arabic / Mono (SIL OFL, self-hosted woff2 in `web/fonts`), and an original guide character
+drawn from the MUTABIQ mark, whose prop matches each page. Page changes use a short covered transition
+(about 0.6 s) that the latest click always wins, with a timeout fallback. Reduced-motion preferences,
+hidden tabs and the header's *Pause motion* control skip or stop decorative motion. Older links
+(`#/dossier`) redirect. The UI must be served over HTTP: ES modules do not load from `file://`.
 
 ## Tests
 
 ```bash
 uv run pytest            # all Python tests
-node --test web/js/core.test.mjs   # UI logic: routing, navigation lifecycle, dossier rules
+node --test web/js/core.test.mjs   # UI logic: routing, navigation lifecycle, assessment rules
 uv run pytest tests/unit # no database or PDFs needed
 ```
 

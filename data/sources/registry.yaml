@@ -93,3 +93,46 @@
     SHA-256 prefix 5438c7a9f4b1. Clean PDF text layer.
   product_categories: []
   local_file: ustr-jordan-fta-rules-of-origin/source.pdf
+
+- id: trc-type-approval-instructions-2-2025
+  title_original: تعليمات رقم (2) لسنة 2025 - تعليمات شروط وإجراءات الحصول على الموافقة لإدخال أجهزة الاتصالات وأجهزة الاتصالات الطرفية
+  title_en: TRC Type Approval Instructions No. 2 of 2025
+  issuing_authority: Telecommunications Regulatory Commission (TRC)
+  jurisdiction: JO
+  original_language: ar
+  document_type: instructions
+  binding_nature: binding
+  legal_status: unknown
+  status_note: Official instructions published in the Official Gazette No. 5970, 2025.
+  provenance_note: Telecommunications Regulatory Commission type approval regulations.
+  product_categories: [telecom, terminal_equipment, wireless, phones]
+  local_file: trc-type-approval-instructions-2-2025/source.pdf
+
+- id: trc-technical-standards-specifications
+  title_original: قواعد فنية ومواصفات قياسية لأجهزة الاتصالات وأجهزة الاتصالات الطرفية
+  title_en: TRC Technical Standards and Specifications for Telecommunications Equipment
+  issuing_authority: Telecommunications Regulatory Commission (TRC)
+  jurisdiction: JO
+  original_language: ar
+  document_type: standard
+  binding_nature: binding
+  legal_status: unknown
+  status_note: Mandatory technical standards and ETSI/EN specifications adopted by TRC.
+  provenance_note: Official technical standards specification document.
+  product_categories: [telecom, rf, emc, safety, etsi]
+  local_file: trc-technical-standards-specifications/source.pdf
+
+- id: trc-type-approval-annexes-2-2025
+  title_original: ملاحق تعليمات رقم (2) لسنة 2025 (النماذج، الأجور، الاستثناءات، والاستخدام الخاص)
+  title_en: TRC Type Approval Annexes No. 2 of 2025 (Forms, Fees, Exemptions, and Personal Use)
+  issuing_authority: Telecommunications Regulatory Commission (TRC)
+  jurisdiction: JO
+  original_language: ar
+  document_type: instructions
+  binding_nature: binding
+  legal_status: unknown
+  status_note: Annexes 1-4 to TRC Instructions No. 2 of 2025.
+  provenance_note: Official annexes specifying application form, fee schedules, exempted devices, and personal use quotas.
+  product_categories: [telecom, fees, exemptions, forms]
+  local_file: trc-type-approval-annexes-2-2025/source.pdf
+

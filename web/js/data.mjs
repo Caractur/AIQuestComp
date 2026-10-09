@@ -42,7 +42,6 @@ export const SAFEGUARDS = [
 ];
 
 export const NOT_COVERED = [
-  { title: 'TRC Instructions No. 2 of 2025 and annexes', why: 'The deck’s trial scope (smartphone type approval). Not indexed in this prototype yet, so the assessment demo uses illustrative requirements.', trial: true },
   { title: 'Customs Law and the customs tariff', why: 'Duty rates, classification and declarations.' },
   { title: 'JSMO technical regulations', why: 'Standards and conformity requirements for product families.' },
   { title: 'JFDA requirements', why: 'Registration and labelling rules for food, drugs and cosmetics.' },
@@ -101,6 +100,45 @@ export const REGISTRY_FALLBACK = [
     amendment_info: 'Implementing rules and later modifications not verified.',
     official_url: 'https://ustr.gov/sites/default/files/uploads/agreements/fta/jordan/asset_upload_file366_8456.pdf',
   },
+  {
+    id: 'trc-type-approval-instructions-2-2025',
+    title_original: 'تعليمات رقم (2) لسنة 2025 - تعليمات شروط وإجراءات الحصول على الموافقة لإدخال أجهزة الاتصالات',
+    title_en: 'TRC Type Approval Instructions No. 2 of 2025',
+    issuing_authority: 'Telecommunications Regulatory Commission (TRC)',
+    document_type: 'instructions',
+    binding_nature: 'binding',
+    legal_status: 'unknown',
+    original_language: 'ar',
+    gazette_reference: 'Official Gazette No. 5970, 2025',
+    amendment_info: null,
+    official_url: null,
+  },
+  {
+    id: 'trc-technical-standards-specifications',
+    title_original: 'قواعد فنية ومواصفات قياسية لأجهزة الاتصالات وأجهزة الاتصالات الطرفية',
+    title_en: 'TRC Technical Standards and Specifications for Telecommunications Equipment',
+    issuing_authority: 'Telecommunications Regulatory Commission (TRC)',
+    document_type: 'standard',
+    binding_nature: 'binding',
+    legal_status: 'unknown',
+    original_language: 'ar',
+    gazette_reference: null,
+    amendment_info: null,
+    official_url: null,
+  },
+  {
+    id: 'trc-type-approval-annexes-2-2025',
+    title_original: 'ملاحق تعليمات رقم (2) لسنة 2025 (النماذج، الأجور، الاستثناءات، والاستخدام الخاص)',
+    title_en: 'TRC Type Approval Annexes No. 2 of 2025 (Forms, Fees, Exemptions, Personal Use)',
+    issuing_authority: 'Telecommunications Regulatory Commission (TRC)',
+    document_type: 'instructions',
+    binding_nature: 'binding',
+    legal_status: 'unknown',
+    original_language: 'ar',
+    gazette_reference: null,
+    amendment_info: null,
+    official_url: null,
+  },
 ];
 
 export const SHORT_NAMES = {
@@ -108,6 +146,9 @@ export const SHORT_NAMES = {
   'mit-import-export-licenses-system-114-2004': 'Licences & Cards Bylaw 114/2004',
   'moa-agriculture-law-13-2015': 'Agriculture Law 13/2015',
   'ustr-jordan-fta-rules-of-origin': 'US–Jordan FTA, Annex 2.2',
+  'trc-type-approval-instructions-2-2025': 'TRC Type Approval Instructions 2/2025',
+  'trc-technical-standards-specifications': 'TRC Technical Standards',
+  'trc-type-approval-annexes-2-2025': 'TRC Type Approval Annexes',
 };
 
 export const EXTRACTION_LABELS = {

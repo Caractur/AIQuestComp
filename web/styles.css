@@ -77,18 +77,23 @@ code { font-size: 0.88em; background: var(--teal-tint); color: var(--navy); padd
 .header-row { min-height: var(--header-h); display: flex; align-items: center; gap: 1.5rem; }
 .brand { display: inline-flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--on-dark); }
 .brand:hover { color: #fff; }
-.wordmark { font: 700 1.3rem/1 var(--sans); letter-spacing: 0.08em; }
-.wordmark-ar { font: 500 1.25rem/1 var(--arabic); color: var(--teal); padding-inline-start: 0.7rem; border-inline-start: 1px solid var(--navy-3); }
-.site-nav { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+.wordmark, .wordmark-brand { font: 700 1.3rem/1 var(--arabic); letter-spacing: 0.02em; }
+.wordmark-ar, .wordmark-sub { font: 500 1.1rem/1 var(--sans); color: var(--teal); padding-inline-start: 0.7rem; border-inline-start: 1px solid var(--navy-3); }
+html[lang='en'] .wordmark-brand { font-family: var(--sans); letter-spacing: 0.08em; }
+html[lang='en'] .wordmark-sub { font-family: var(--arabic); }
+.site-nav { margin-inline-start: auto; display: flex; align-items: center; gap: 0.8rem; }
 .site-nav ul { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
 .site-nav a { display: block; padding: 0.5rem 0.85rem; border-radius: 8px; text-decoration: none; color: var(--on-dark-muted); font-weight: 500; font-size: 0.95rem; }
 .site-nav a:hover { color: #fff; background: var(--navy-2); }
 .site-nav a[aria-current='page'] { color: var(--navy); background: var(--teal); }
+.lang-toggle { display: inline-flex; align-items: center; gap: 0.45rem; background: var(--navy-2); color: var(--teal); border: 1px solid var(--teal-deep); border-radius: 8px; padding: 0.42rem 0.85rem; font: 600 0.85rem var(--sans); cursor: pointer; transition: all 0.2s var(--ease); }
+.lang-toggle:hover { background: var(--teal); color: var(--navy); border-color: var(--teal); }
+.lang-globe { font-size: 0.95rem; line-height: 1; }
 .motion-toggle { display: inline-flex; align-items: center; gap: 0.5rem; background: transparent; color: var(--on-dark-muted); border: 1px solid var(--navy-3); border-radius: 8px; padding: 0.42rem 0.75rem; font: 500 0.82rem var(--sans); cursor: pointer; }
 .motion-toggle:hover { color: #fff; border-color: var(--on-dark-muted); }
 .motion-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--teal); }
 .motion-toggle[aria-pressed='true'] .motion-dot { background: transparent; box-shadow: inset 0 0 0 2px var(--on-dark-muted); }
-.menu-button { display: none; margin-left: auto; align-items: center; gap: 0.6rem; background: var(--navy-2); color: var(--on-dark); border: 0; border-radius: 8px; padding: 0.55rem 0.9rem; font: 500 0.95rem var(--sans); cursor: pointer; }
+.menu-button { display: none; margin-inline-start: auto; align-items: center; gap: 0.6rem; background: var(--navy-2); color: var(--on-dark); border: 0; border-radius: 8px; padding: 0.55rem 0.9rem; font: 500 0.95rem var(--sans); cursor: pointer; }
 .menu-icon, .menu-icon::before, .menu-icon::after { display: block; width: 1.05rem; height: 2px; background: currentColor; border-radius: 2px; position: relative; transition: transform 0.2s var(--ease); }
 .menu-icon::before, .menu-icon::after { content: ''; position: absolute; left: 0; }
 .menu-icon::before { top: -6px; } .menu-icon::after { top: 6px; }
@@ -516,3 +521,249 @@ input[type='checkbox'], input[type='radio'] { accent-color: var(--teal-deep); wi
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+
+/* ------------------------------------------------------------------------- RTL Layout & Arabic Typography */
+html[dir='rtl'] {
+  --sans: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, system-ui, sans-serif;
+}
+html[dir='rtl'] body {
+  font-family: var(--arabic);
+}
+html[dir='rtl'] h1,
+html[dir='rtl'] h2,
+html[dir='rtl'] h3 {
+  letter-spacing: normal;
+  font-family: var(--arabic);
+}
+html[dir='rtl'] .eyebrow {
+  letter-spacing: 0.04em;
+}
+html[dir='rtl'] .skip-link {
+  left: auto;
+  right: 1rem;
+}
+html[dir='rtl'] .tagline-ar {
+  width: auto;
+}
+html[dir='rtl'] .button .icon-arrow,
+html[dir='rtl'] .button-primary svg,
+html[dir='rtl'] .actions a.button-primary svg {
+  transform: scaleX(-1);
+}
+html[dir='rtl'] .io-engine .arrow {
+  transform: scaleX(-1);
+}
+html[dir='rtl'] .inputs > div + div {
+  border-inline-start: 1px solid var(--border);
+  padding-inline-start: 2rem;
+}
+html[dir='rtl'] .findings dd.src {
+  text-align: start;
+}
+
+/* ------------------------------------------------------------------------- 2-Stage Inputs & TRC Form Styles */
+.inputs-2stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.stage-card {
+  padding: 1.5rem;
+  border-radius: var(--radius, 12px);
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+}
+.stage-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+}
+.stage-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--step-0, 1.1rem);
+  color: var(--navy, #0b2440);
+}
+.stage-badge .n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: var(--teal, #008080);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.company-profile-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.cpp-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.cpp-name {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.15rem;
+}
+.cpp-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.6rem 1.2rem;
+  padding: 1rem;
+  background: var(--bg-alt, #f8fafc);
+  border-radius: 8px;
+  font-size: 0.92rem;
+}
+.meta-label {
+  color: var(--muted, #64748b);
+  margin-inline-end: 0.3rem;
+  font-weight: 500;
+}
+.company-edit-form {
+  padding: 0.5rem 0;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.8rem 1.2rem;
+}
+.form-full {
+  grid-column: 1 / -1;
+}
+.button-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.88rem;
+}
+.stage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1.8rem;
+}
+@media (max-width: 58rem) {
+  .stage-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.input-action-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.input-action-group input {
+  flex: 1;
+}
+.input-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.input-inline input {
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Official TRC Form (Annex 1) Styles */
+.trc-form-container {
+  padding: 2rem;
+  background: #ffffff;
+  border: 2px solid var(--navy-2, #1b3a5b);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+.trc-form-header {
+  border-bottom: 2px solid var(--navy, #0b2440);
+  padding-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.trc-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.trc-official-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--navy, #0b2440);
+  margin: 0 0 0.4rem 0;
+}
+.trc-form-section {
+  margin-bottom: 1.5rem;
+}
+.trc-sec-title {
+  background: var(--navy, #0b2440);
+  color: #ffffff;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.95rem;
+  margin: 0 0 0.5rem 0;
+  border-radius: 4px;
+}
+.trc-checkbox-row {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.5rem 0;
+  flex-wrap: wrap;
+}
+.trc-chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+}
+.trc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  margin-bottom: 0.5rem;
+}
+.trc-table th,
+.trc-table td {
+  border: 1px solid #cbd5e1;
+  padding: 0.55rem 0.75rem;
+  text-align: start;
+}
+.trc-table th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: var(--navy, #0b2440);
+}
+.trc-fees-box {
+  background: #f8fafc;
+  border: 1px dashed var(--teal, #008080);
+  padding: 1rem;
+  border-radius: 6px;
+}
+.fees-summary-grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 1.05rem;
+}
+.badge-total {
+  background: var(--teal, #008080);
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+@media print {
+  .site-header, .site-footer, .flow, .tabs, .app-bar, .panel-foot { display: none !important; }
+  .trc-form-container { border: none !important; box-shadow: none !important; padding: 0 !important; }
+}
+
+

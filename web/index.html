@@ -1,12 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MUTABIQ: every requirement, backed by evidence. Regulatory compliance and application preparation for products entering the Jordanian market.">
+  <meta name="description" content="مُطابِق: كل متطلب، له دليل. الامتثال التنظيمي وإعداد طلبات المطابقة للمنتجات الداخلة إلى السوق الأردني.">
   <meta name="theme-color" content="#0b2440">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <title>MUTABIQ</title>
+  <title>مُطابِق · كل متطلب، له دليل</title>
+  <link rel="preload" href="fonts/IBMPlexSansArabic-600-arabic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/IBMPlexSansArabic-400-arabic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/IBMPlexSans-700-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/IBMPlexSans-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts/fonts.css">
@@ -14,30 +16,33 @@
   <script type="module" src="js/app.mjs"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main">الانتقال إلى المحتوى</a>
 
   <header class="site-header">
     <div class="wrap header-row">
-      <a class="brand" href="#/" data-route-link aria-label="MUTABIQ, overview">
+      <a class="brand" href="#/" data-route-link aria-label="مُطابِق · الرئيسية">
         <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
           <rect class="mark-tile" width="40" height="40" rx="10"/>
           <circle class="mark-dot" cx="12" cy="14" r="3"/><rect class="mark-bar" x="18" y="11.5" width="13" height="5" rx="2.5"/>
           <path class="mark-check" d="M10 21.5Q10 27.5 16 27.5H30"/>
         </svg>
-        <span class="wordmark">MUTABIQ</span><span class="wordmark-ar" lang="ar" dir="rtl">مُطابِق</span>
+        <span class="wordmark-brand">مُطابِق</span><span class="wordmark-sub">MUTABIQ</span>
       </a>
       <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
-        <span class="menu-icon" aria-hidden="true"></span><span class="menu-label">Menu</span>
+        <span class="menu-icon" aria-hidden="true"></span><span class="menu-label">القائمة</span>
       </button>
       <nav id="site-nav" class="site-nav" aria-label="Main">
         <ul>
-          <li><a href="#/" data-route-link data-route="home">Overview</a></li>
-          <li><a href="#/assessment" data-route-link data-route="assessment">Assessment</a></li>
-          <li><a href="#/ask" data-route-link data-route="ask">Evidence search</a></li>
-          <li><a href="#/sources" data-route-link data-route="sources">Knowledge base</a></li>
+          <li><a href="#/" data-route-link data-route="home">نظرة عامة</a></li>
+          <li><a href="#/assessment" data-route-link data-route="assessment">تقييم المطابقة</a></li>
+          <li><a href="#/ask" data-route-link data-route="ask">البحث في التشريعات</a></li>
+          <li><a href="#/sources" data-route-link data-route="sources">قاعدة المعرفة</a></li>
         </ul>
+        <button class="lang-toggle" type="button" aria-label="التبديل إلى اللغة الإنجليزية (Switch to English)">
+          <span class="lang-globe" aria-hidden="true">🌐</span><span class="lang-label">English</span>
+        </button>
         <button class="motion-toggle" type="button" aria-pressed="false">
-          <span class="motion-dot" aria-hidden="true"></span><span class="motion-label">Pause motion</span>
+          <span class="motion-dot" aria-hidden="true"></span><span class="motion-label">إيقاف الحركة</span>
         </button>
       </nav>
     </div>
@@ -46,7 +51,7 @@
   <div class="stage">
     <main id="main" class="route" tabindex="-1">
       <noscript>
-        <div class="wrap"><p class="lede">MUTABIQ needs JavaScript to run. The knowledge base is listed in <code>data/sources/registry.yaml</code>.</p></div>
+        <div class="wrap"><p class="lede">يحتاج مُطابِق إلى تفعيل JavaScript للعمل.</p></div>
       </noscript>
     </main>
     <div class="cover" aria-hidden="true" hidden>
@@ -66,9 +71,9 @@
           <circle class="mark-dot" cx="12" cy="14" r="3"/><rect class="mark-bar" x="18" y="11.5" width="13" height="5" rx="2.5"/>
           <path class="mark-check" d="M10 21.5Q10 27.5 16 27.5H30"/>
         </svg>
-        <strong>MUTABIQ</strong> · Team ZAA · AI Quest 2026
+        <strong class="footer-brand-text">مُطابِق · فريق ZAA · مسابقة الذكاء الاصطناعي 2026</strong>
       </p>
-      <p class="footer-note">MUTABIQ prepares the file. The authority makes the decision. Prototype: not legal advice, and the legal status of every source is still unverified.</p>
+      <p class="footer-note">مُطابِق يُعد الملف، والجهة الرسمية تتخذ القرار. نموذج أولي: ليس استشارة قانونية، والوضع القانوني للنصوص قيد المراجعة الرسمية.</p>
     </div>
   </footer>
 </body>

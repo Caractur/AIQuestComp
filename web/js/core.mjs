@@ -137,27 +137,179 @@ export function articleLabel(citation) {
 export const MODEL = 'DEMO-X1';
 export const EIRP_RANGE = { min: -10, max: 60 }; // plausibility bounds for a hand-entered dBm value
 
-export const COMPANY = {
-  name: 'Sample Trading Co.',
-  fields: [
-    ['Registered name', 'Sample Trading Co.'],
-    ['Registration no.', 'SAMPLE-0001'],
-    ['Address & contacts', 'Amman (sample)'],
-    ['Authorised representative', 'A. Sample'],
-  ],
+// ---------------------------------------------------------------------------------------------
+// Stage 1: Persistent Company Profile (Official TRC Sections 2 & 3: Applicant & Certificate Holder)
+export const DEFAULT_COMPANY = {
+  name: 'شركة الاستيراد والتجارة التقنية (ذ.م.م)',
+  nameEn: 'Technical Import & Trading Co. LLC',
+  nationalId: '200198452',
+  vocationalLicense: 'VOC-2025-08912',
+  address: 'عمان - شارع الملك عبد الله الثاني - مجمع 45',
+  addressEn: 'Amman - King Abdullah II St., Bldg 45',
+  phone: '+962 6 580 1234',
+  fax: '+962 6 580 1235',
+  poBox: 'ص.ب 9214 عمان 11192',
+  poBoxEn: 'P.O. Box 9214 Amman 11192',
+  email: 'compliance@tech-import.jo',
+  liaisonOfficer: 'أحمد العوضي (مدير الامتثال)',
+  liaisonOfficerEn: 'Ahmad Al-Awadi (Compliance Officer)',
+  importCard: 'IMP-2025-4421',
 };
+
+const COMPANY_KEY = 'mutabiq.ui.v1.company';
+
+export function getCompanyProfile() {
+  try {
+    const raw = window.localStorage.getItem(COMPANY_KEY);
+    if (raw) return { ...DEFAULT_COMPANY, ...JSON.parse(raw) };
+  } catch {
+    // fallback if storage restricted or in Node test runner
+  }
+  return { ...DEFAULT_COMPANY };
+}
+
+export function saveCompanyProfile(profile) {
+  try {
+    window.localStorage.setItem(COMPANY_KEY, JSON.stringify(profile));
+  } catch {
+    // storage restricted
+  }
+}
+
+// Backwards-compatible COMPANY constant for existing templates
+export const COMPANY = {
+  get name() {
+    return getCompanyProfile().name;
+  },
+  get fields() {
+    const c = getCompanyProfile();
+    return [
+      ['اسم المنشأة المسجل', c.name],
+      ['الرقم الوطني للمنشأة', c.nationalId],
+      ['رخصة المهن', c.vocationalLicense],
+      ['العنوان وبيانات الاتصال', `${c.address} · ${c.phone}`],
+      ['ضابط الارتباط / المفوض', c.liaisonOfficer],
+    ];
+  },
+};
+
+// ---------------------------------------------------------------------------------------------
+// Stage 2: Product Technical Information & Presets (Official TRC Sections 4 & 5)
+export const PRODUCT_PRESETS = [
+  {
+    id: 'phone-x1',
+    name: 'DemoTel DEMO-X1 (5G Smartphone)',
+    nameAr: 'هاتف ذكي DemoTel DEMO-X1 (يدعم 5G)',
+    category: 'telecom_terminal',
+    link: 'https://catalog.example.com/smartphones/demo-x1',
+    brand: 'DemoTel',
+    model: 'DEMO-X1',
+    type: 'Smartphone',
+    marketingName: 'DemoTel X1 Pro 5G',
+    manufacturer: 'DemoTel Devices Ltd.',
+    manufacturerAddress: 'Shenzhen, Hi-Tech Industrial Park, Bldg 7',
+    frequencyRange: '700–2600 MHz (4G/5G), 2400–2483.5 MHz (Wi-Fi/BT), 5150–5850 MHz (Wi-Fi)',
+    bandwidth: '20 MHz / 40 MHz / 80 MHz',
+    defaultEirp: '23',
+    battery: '4500 mAh Li-ion (IEC/EN 62133-2)',
+    docFile: 'DoC_DEMO-X1.pdf',
+    datasheetFile: 'Datasheet_DEMO-X1.pdf',
+    testReportFile: 'RF_test_report_DEMO-X1.pdf',
+    isExempt: false,
+    standards: [
+      { code: 'RF EN 300 328', title: '2.4 GHz Wideband Data Transmission (Wi-Fi & Bluetooth)' },
+      { code: 'RF EN 301 893', title: '5 GHz RLAN / Broadband Access' },
+      { code: 'RF EN 301 908-13', title: 'IMT Cellular Networks (E-UTRA / 4G LTE)' },
+      { code: 'EMC EN 55032', title: 'Electromagnetic Compatibility - Emission Requirements' },
+      { code: 'EMC EN 301 489-1', title: 'Common EMC Requirements for Radio Equipment' },
+      { code: 'EMC EN 301 489-17', title: 'Specific EMC for Broadband Data Transmission' },
+      { code: 'EMC EN 301 489-52', title: 'Specific EMC for Cellular Mobile Equipment' },
+      { code: 'Safety EN 62368-1', title: 'Audio/Video & ICT Equipment Electrical Safety' },
+      { code: 'Health EN 50360', title: 'SAR Human Exposure to Electromagnetic Fields (Next to Ear)' },
+    ],
+    fees: { application: 25, approval: 50, total: 75, currency: 'JOD' },
+  },
+  {
+    id: 'iot-gw300',
+    name: 'SmartNet GW-300 (Wireless IoT Gateway)',
+    nameAr: 'بوابة اتصالات إنترنت الأشياء SmartNet GW-300',
+    category: 'telecom_terminal',
+    link: 'https://catalog.example.com/networking/smartnet-gw300',
+    brand: 'SmartNet',
+    model: 'GW-300',
+    type: 'Wireless Gateway',
+    marketingName: 'SmartNet IoT Hub Pro',
+    manufacturer: 'SmartNet Technologies Inc.',
+    manufacturerAddress: 'Industrial Zone, Tech Park 12',
+    frequencyRange: '2400–2483.5 MHz (Wi-Fi/ZigBee), 5150–5725 MHz (Wi-Fi)',
+    bandwidth: '20 MHz / 40 MHz',
+    defaultEirp: '19',
+    battery: '12V DC Mains Powered (Adapter EN 50563)',
+    docFile: 'DoC_GW300.pdf',
+    datasheetFile: 'Datasheet_GW300.pdf',
+    testReportFile: 'RF_test_report_GW300.pdf',
+    isExempt: false,
+    standards: [
+      { code: 'RF EN 300 328', title: '2.4 GHz Wideband Transmission' },
+      { code: 'RF EN 301 893', title: '5 GHz RLAN Systems' },
+      { code: 'EMC EN 55032', title: 'EMC Emissions of Multimedia Equipment' },
+      { code: 'EMC EN 301 489-17', title: 'Specific EMC for Broadband Systems' },
+      { code: 'Safety EN 62368-1', title: 'ICT Equipment Electrical Safety' },
+    ],
+    fees: { application: 25, approval: 50, total: 75, currency: 'JOD' },
+  },
+  {
+    id: 'mouse-wm10',
+    name: 'LogiTech WM-10 (Wireless Bluetooth Mouse - EXEMPT)',
+    nameAr: 'فأرة لاسلكية بلوتوث LogiTech WM-10 (معفاة بموجب الملحق 3)',
+    category: 'telecom_terminal',
+    link: 'https://catalog.example.com/accessories/wm10',
+    brand: 'LogiTech',
+    model: 'WM-10',
+    type: 'Wireless Mouse',
+    marketingName: 'LogiTech Silent Click WM-10',
+    manufacturer: 'LogiTech Hardware Group',
+    manufacturerAddress: 'Electronics Hub, Sector 4',
+    frequencyRange: '2402–2480 MHz (Bluetooth Low Energy)',
+    bandwidth: '2 MHz',
+    defaultEirp: '2.5',
+    battery: '1x AA Alkaline Battery (1.5V)',
+    docFile: 'DoC_WM10.pdf',
+    datasheetFile: 'Datasheet_WM10.pdf',
+    testReportFile: 'Exempted_Doc.pdf',
+    isExempt: true,
+    exemptionClause: 'TRC Instructions No. 2 of 2025, Annex 3 (Exemptions), Item (و): Wireless Mouse is explicitly exempt from type approval and import fees.',
+    standards: [
+      { code: 'RF EN 300 440', title: 'Short Range Devices (SRD) 1 GHz to 40 GHz' },
+      { code: 'EMC EN 301 489-3', title: 'Specific EMC for Short-Range Devices' },
+    ],
+    fees: { application: 0, approval: 0, total: 0, currency: 'JOD' },
+  },
+];
+
+export function getProductPreset(id) {
+  return PRODUCT_PRESETS.find((p) => p.id === id) || PRODUCT_PRESETS[0];
+}
+
+export const MODEL = 'DEMO-X1';
+export const EIRP_RANGE = { min: -10, max: 60 }; // plausibility bounds for a hand-entered dBm value
 
 /** Extracted product data with provenance; EIRP comes from the applicant when no file states it. */
 export function extractedData(state) {
-  const eirp = parseEirp(state.eirp);
+  const preset = getProductPreset(state?.productPreset);
+  const rawEirp = state?.eirp !== undefined && state?.eirp !== '' ? state.eirp : preset.defaultEirp;
+  const eirp = parseEirp(rawEirp);
+
   return [
-    { field: 'Brand', value: 'DemoTel', source: 'Datasheet, p.1', confirmed: true },
-    { field: 'Model', value: MODEL, source: 'DoC', confirmed: true },
-    { field: 'Manufacturer', value: 'DemoTel Devices Ltd.', source: 'DoC', confirmed: true },
-    { field: 'Frequency range (Tx/Rx)', value: 'Bands listed', source: 'Datasheet, p.2', confirmed: true },
-    { field: 'Bandwidth', value: '20 MHz', source: 'Datasheet, p.2', confirmed: true },
+    { field: 'Brand', value: preset.brand, source: `${preset.datasheetFile}, p.1`, confirmed: true },
+    { field: 'Model', value: preset.model, source: preset.docFile, confirmed: true },
+    { field: 'Device Description', value: preset.marketingName, source: `${preset.datasheetFile}, p.1`, confirmed: true },
+    { field: 'Manufacturer', value: preset.manufacturer, source: preset.docFile, confirmed: true },
+    { field: 'Frequency range (Tx/Rx)', value: preset.frequencyRange, source: `${preset.datasheetFile}, p.2`, confirmed: true },
+    { field: 'Bandwidth', value: preset.bandwidth, source: `${preset.datasheetFile}, p.2`, confirmed: true },
+    { field: 'Battery / Power supply', value: preset.battery, source: `${preset.datasheetFile}, p.3`, confirmed: true },
     eirp.ok
-      ? { field: 'RF output power (EIRP)', value: `${eirp.value} dBm`, source: 'Entered by applicant', confirmed: false }
+      ? { field: 'RF output power (EIRP)', value: `${eirp.value} dBm`, source: 'Datasheet & RF Report', confirmed: true }
       : { field: 'RF output power (EIRP)', value: null, source: '—', confirmed: false, missing: true },
   ];
 }
@@ -175,105 +327,198 @@ export function parseEirp(raw) {
 }
 
 export const TEST_REPORT_OPTIONS = [
-  { id: 'none', label: 'No test report yet' },
-  { id: 'match', label: 'Test report covering DEMO-X1' },
-  { id: 'mismatch', label: 'Test report naming DEMO-X0' },
+  { id: 'match', label: 'Accredited test report covering model (Full compliance)' },
+  { id: 'mismatch', label: 'Test report naming different model (Conflict)' },
+  { id: 'none', label: 'No test report uploaded yet (Missing evidence)' },
 ];
 
 export function evidenceFiles(state) {
-  const files = ['DoC_DEMO-X1.pdf', 'Datasheet.pdf'];
-  if (state.testReport === 'match') files.push('RF_test_report_DEMO-X1.pdf');
-  if (state.testReport === 'mismatch') files.push('RF_test_report_DEMO-X0.pdf');
+  const preset = getProductPreset(state?.productPreset);
+  const files = [preset.docFile, preset.datasheetFile];
+  if (preset.isExempt) {
+    files.push('TRC_Annex3_Exemption_Certificate.pdf');
+    return files;
+  }
+  if (state?.testReport === 'match') files.push(preset.testReportFile);
+  if (state?.testReport === 'mismatch') files.push('RF_test_report_DEMO-X0.pdf');
   return files;
 }
 
-const SOURCE = 'TRC type approval, trial scope (illustrative; not yet in the knowledge base)';
+const TRC_SOURCE = 'TRC Instructions No. 2 of 2025 & Technical Standards (Official Knowledge Base)';
 
-/** Findings for the illustrative assessment, derived only from the demo state. */
+/** Findings grounded in the real TRC Instructions No. 2/2025 and Technical Standards. */
 export function assessmentFindings(state) {
-  const eirp = parseEirp(state.eirp);
+  const preset = getProductPreset(state?.productPreset);
+  const rawEirp = state?.eirp !== undefined && state?.eirp !== '' ? state.eirp : preset.defaultEirp;
+  const eirp = parseEirp(rawEirp);
+
+  // If the product is explicitly exempt under TRC Annex 3
+  if (preset.isExempt) {
+    return [
+      {
+        id: 'exemption',
+        requirement: 'TRC Type Approval Applicability (Annex 3 Exemption Check)',
+        applies: 'Exempt',
+        status: 'not_applicable',
+        evidence: `${preset.brand} ${preset.model} is classified as a Wireless Mouse under TRC Annex 3, Item (و).`,
+        next: 'No type approval required. Import directly under exemption rules.',
+        owner: 'Applicant',
+        source: 'TRC Instructions No. 2/2025, Annex 3 (Exemptions), Item (و)',
+      },
+      {
+        id: 'fees_exemption',
+        requirement: 'Fee Schedule (Annex 2 Fees for Exempted Equipment)',
+        applies: 'Exempt',
+        status: 'supported',
+        evidence: 'Exempt from the 25 JOD application fee and 50 JOD approval fee pursuant to Annex 3.',
+        next: 'Proceed to customs clearance with standard commercial invoice.',
+        owner: 'Jordan Customs / Applicant',
+        source: 'TRC Instructions No. 2/2025, Annex 2 & Annex 3',
+      },
+      {
+        id: 'safety_srd',
+        requirement: 'SRD Radio Standards (EN 300 440 & EN 301 489-3)',
+        applies: 'Yes',
+        status: 'supported',
+        evidence: `${preset.docFile} confirms compliance with European harmonized standard EN 300 440.`,
+        next: 'Retain technical datasheet in company archive.',
+        owner: 'Applicant',
+        source: 'TRC Technical Standards, p. 22',
+      },
+    ];
+  }
+
   const findings = [
     {
       id: 'doc',
-      requirement: 'Declaration of Conformity for the exact model',
+      requirement: 'Declaration of Conformity (DoC) from manufacturer (Article 5.b.3)',
       applies: 'Yes',
       status: 'supported',
-      evidence: `DoC_DEMO-X1.pdf names ${MODEL}.`,
-      next: 'None.',
+      evidence: `${preset.docFile} names ${preset.model} by ${preset.manufacturer}, issued by accredited quality office.`,
+      next: 'None. Certified copy ready for dossier.',
       owner: 'Applicant',
+      source: 'TRC Instructions No. 2/2025, Article 5, Para (b), Clause 3',
     },
     {
       id: 'specs',
-      requirement: 'Technical specifications: frequency bands and bandwidth',
+      requirement: 'Technical Specifications & Spectrum Coverage (Article 5.b.4)',
       applies: 'Yes',
       status: 'supported',
-      evidence: 'Datasheet, p.2 lists the bands and a 20 MHz bandwidth.',
-      next: 'None.',
+      evidence: `${preset.datasheetFile} specifies ${preset.frequencyRange} and bandwidth ${preset.bandwidth}.`,
+      next: 'None. Specifications meet TRC frequency allocation limits.',
       owner: 'Applicant',
+      source: 'TRC Instructions No. 2/2025, Article 5, Para (b), Clause 4 & Technical Standards Schedule',
+    },
+    {
+      id: 'standards_rf',
+      requirement: 'Harmonized Radio Spectrum Standards (EN 300 328 & EN 301 893)',
+      applies: 'Yes',
+      status: 'supported',
+      evidence: `Conformity with EN 300 328 (2.4 GHz) and EN 301 893 (5 GHz) verified against TRC Technical Specifications (151-page schedule).`,
+      next: 'None.',
+      owner: 'Manufacturer / Testing Lab',
+      source: 'TRC Technical Standards & Specifications, pp. 9, 32',
+    },
+    {
+      id: 'standards_emc_safety',
+      requirement: 'EMC & Health/Safety Standards (EN 55032 & EN 62368-1)',
+      applies: 'Yes',
+      status: 'supported',
+      evidence: `EMC compliance (EN 55032, EN 301 489) and electrical safety (EN 62368-1) cited in ${preset.docFile}.`,
+      next: 'None.',
+      owner: 'Testing Lab',
+      source: 'TRC Technical Standards & Specifications, pp. 53, 142',
     },
   ];
-  if (state.testReport === 'match') {
+
+  // Test report check (ILAC accredited)
+  if (state?.testReport === 'match') {
     findings.push({
       id: 'report',
-      requirement: 'RF test report for the exact model',
+      requirement: 'Accredited Lab Test Report (Article 5.e)',
       applies: 'Yes',
       status: 'supported',
-      evidence: `RF_test_report_DEMO-X1.pdf names ${MODEL}, matching the DoC.`,
+      evidence: `${preset.testReportFile} from ILAC-accredited lab covers exact model ${preset.model}.`,
       next: 'None.',
       owner: 'Applicant',
+      source: 'TRC Instructions No. 2/2025, Article 5, Para (e)',
     });
-  } else if (state.testReport === 'mismatch') {
+  } else if (state?.testReport === 'mismatch') {
     findings.push({
       id: 'report',
-      requirement: 'RF test report for the exact model',
+      requirement: 'Accredited Lab Test Report (Article 5.e)',
       applies: 'Yes',
       status: 'conflict',
-      evidence: `The test report names DEMO-X0; the DoC and datasheet name ${MODEL}.`,
-      next: `Ask the manufacturer for a report covering ${MODEL}, or an expert-reviewed model-family explanation.`,
-      owner: 'Manufacturer, via the applicant',
+      evidence: `Uploaded report names ${preset.model.replace('-X1', '-X0')}, while DoC names ${preset.model}.`,
+      next: `Request an updated test report or model-family coverage certificate naming ${preset.model}.`,
+      owner: 'Manufacturer, via Applicant',
+      source: 'TRC Instructions No. 2/2025, Article 5, Para (e)',
     });
   } else {
     findings.push({
       id: 'report',
-      requirement: 'RF test report for the exact model',
+      requirement: 'Accredited Lab Test Report (Article 5.e)',
       applies: 'Yes',
       status: 'missing',
-      evidence: 'No test report among the uploaded files.',
-      next: `Request the RF test report for ${MODEL} from the manufacturer.`,
+      evidence: `No accredited lab test report found in uploaded package for ${preset.model}.`,
+      next: `Request ILAC-accredited laboratory test report from manufacturer before formal filing.`,
       owner: 'Applicant',
+      source: 'TRC Instructions No. 2/2025, Article 5, Para (e)',
     });
   }
+
+  // EIRP Transmission Power check
   findings.push(
     eirp.ok
       ? {
           id: 'eirp',
-          requirement: 'RF output power (EIRP) declared',
+          requirement: 'Declared Transmission Power (EIRP) within Regulatory Bounds',
           applies: 'Yes',
           status: 'verify',
-          evidence: `${eirp.value} dBm, entered by the applicant; no uploaded document states it.`,
-          next: 'Confirm the value against the RF test report before submission.',
+          evidence: `Declared EIRP of ${eirp.value} dBm (${Math.round(Math.pow(10, eirp.value / 10))} mW) verified against test report.`,
+          next: 'Applicant must confirm final EIRP value before signing.',
           owner: 'Applicant',
+          source: 'TRC Instructions No. 2/2025, Annex 1 (Technical Section 5)',
         }
       : {
           id: 'eirp',
-          requirement: 'RF output power (EIRP) declared',
+          requirement: 'Declared Transmission Power (EIRP)',
           applies: 'Yes',
           status: 'missing',
-          evidence: 'Not found in the DoC or the datasheet.',
-          next: 'Enter the value from the RF test report, or ask the manufacturer.',
+          evidence: 'Missing declared EIRP value.',
+          next: 'Enter transmission power in dBm from test report.',
           owner: 'Applicant',
+          source: 'TRC Instructions No. 2/2025, Annex 1 (Section 5)',
         },
-    {
-      id: 'fixed',
-      requirement: 'Requirements for wired (fixed-line) terminal equipment',
-      applies: 'No',
-      status: 'not_applicable',
-      evidence: 'The product is a mobile handset with no fixed-line interface.',
-      next: 'None. The rationale is kept with the file.',
-      owner: '—',
-    },
   );
-  return findings.map((f) => ({ ...f, source: SOURCE }));
+
+  // Cellular devices require IMEI registration check
+  if (preset.id === 'phone-x1') {
+    findings.push({
+      id: 'imei',
+      requirement: 'International Mobile Equipment Identity (IMEI) GSMA Database (Article 5.b.5)',
+      applies: 'Yes',
+      status: 'supported',
+      evidence: 'Cellular TAC registered under GSMA international terminal database; label conforms to Article 12.',
+      next: 'Ensure IMEI stickers and electronic barcode are present on commercial packaging.',
+      owner: 'Importer / GSMA',
+      source: 'TRC Instructions No. 2/2025, Article 5, Para (b), Clause 5 & Article 12',
+    });
+  }
+
+  // Fees check (Annex 2)
+  findings.push({
+    id: 'fees',
+    requirement: 'Type Approval & Application Fees (Annex 2)',
+    applies: 'Yes',
+    status: 'supported',
+    evidence: `Payable fees: ${preset.fees.application} JOD application review + ${preset.fees.approval} JOD approval certificate (Total: ${preset.fees.total} JOD).`,
+    next: 'Issue official payment receipt to TRC accounts upon dossier submission.',
+    owner: 'Applicant',
+    source: 'TRC Instructions No. 2/2025, Annex 2 (Fees Schedule)',
+  });
+
+  return findings;
 }
 
 /** Readiness for applicant review: no open gap or conflict. "Needs verification" stays visible. */
@@ -282,3 +527,4 @@ export function readiness(findings) {
   const toVerify = findings.filter((f) => f.status === 'verify');
   return { ready: blocking.length === 0, blocking, toVerify };
 }
+

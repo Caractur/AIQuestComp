@@ -1,0 +1,5 @@
+# Shell scripts must keep LF endings to run on Linux/macOS even when committed from Windows.
+*.sh text eol=lf
+*.gz binary
+*.pdf binary
+*.woff2 binary

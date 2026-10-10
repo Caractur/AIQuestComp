@@ -348,8 +348,8 @@ html[lang='en'] .wordmark-sub { font-family: var(--arabic); }
 .options { color: var(--muted); }
 .options summary { cursor: pointer; width: fit-content; font-weight: 600; }
 .options-body { display: flex; flex-wrap: wrap; gap: 0.9rem 2rem; margin-top: 0.8rem; align-items: center; }
-.options label { display: inline-flex; gap: 0.5rem; align-items: center; }
-.options select { background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; padding: 0.35rem 0.5rem; font: 400 0.92rem var(--sans); }
+.options label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+.options select { max-width: 100%; min-width: 0; background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; padding: 0.35rem 0.5rem; font: 400 0.92rem var(--sans); }
 input[type='checkbox'], input[type='radio'] { accent-color: var(--teal-deep); width: 1.05rem; height: 1.05rem; }
 
 .results { margin-top: clamp(1.6rem, 4vw, 2.6rem); display: grid; gap: 1rem; }
@@ -735,6 +735,11 @@ html[dir='rtl'] .findings dd.src {
   border: 1px solid #cbd5e1;
   padding: 0.55rem 0.75rem;
   text-align: start;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+  .trc-form-container { padding: 1rem; }
+  .trc-table th, .trc-table td { padding: 0.45rem 0.5rem; }
 }
 .trc-table th {
   background: #f1f5f9;

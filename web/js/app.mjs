@@ -1192,7 +1192,7 @@ function renderAssessmentPanel(tab) {
           <tbody>
             <tr><th style="width:25%">${esc(isAr ? 'نطاق التردد (إرسال/استقبال)' : 'Frequency Range (Tx/Rx)')}</th><td>${esc(preset.frequencyRange)}</td></tr>
             <tr><th>${esc(isAr ? 'عرض النطاق الترددي' : 'Bandwidth')}</th><td>${esc(preset.bandwidth)}</td></tr>
-            <tr><th>${esc(isAr ? 'قدرة البث الإشعاعي (EIRP)' : 'RF Output Power (EIRP)')}</th><td><strong>${esc(rawEirp)} dBm</strong> (${esc(isAr ? 'مدخل وموثق' : 'Declared & Documented')})</td></tr>
+            <tr><th>${esc(isAr ? 'قدرة البث الإشعاعي (EIRP)' : 'RF Output Power (EIRP)')}</th><td><strong>${esc(rawEirp)} dBm</strong> (${esc(isAr ? 'قيمة مُصرّح بها، بانتظار التأكيد' : 'Declared, to be confirmed')})</td></tr>
             <tr><th>${esc(isAr ? 'البطارية والتغذية الكهربائية' : 'Battery & Power Supply')}</th><td>${esc(preset.battery)}</td></tr>
             <tr><th>${esc(isAr ? 'المواصفات القياسية المعتمدة' : 'Applicable Harmonized Standards')}</th><td>${preset.standards.map((st) => `<span class="chip" style="margin:2px">${esc(st.code)}</span>`).join('')}</td></tr>
           </tbody>
@@ -1231,7 +1231,10 @@ function renderAssessmentPanel(tab) {
     <!-- Compliance Summary & Readiness Card -->
     <div style="margin-top:1.5rem">
       <div class="app-readiness on-dark">${readinessCard(
-        a.appChecklist.map(([title, val], idx) => [title, idx === 2 ? r.blocking.length === 0 : val]),
+        a.appChecklist.map(([title, val], idx) => [
+          title,
+          idx === 2 ? r.blocking.length === 0 : idx === 3 ? findings.some((f) => f.id === 'eirp' && f.status === 'supported') : val,
+        ]),
         {
           pct,
           left: r.ready ? (isAr ? 'جاهز لمراجعة مقدم الطلب والتقديم' : 'Ready for applicant review & submission') : (isAr ? `${r.blocking.length} بنود تتطلب الإجراء قبل المراجعة` : `${r.blocking.length} open items before review`),

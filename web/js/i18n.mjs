@@ -248,8 +248,8 @@ export const STRINGS = {
       appChecklist: [
         ['استخراج المعايير المنطبقة من تعليمات الهيئة 2/2025', true],
         ['مطابقة المعايير الأوروبية (ETSI EN) المعتمدة', true],
-        ['فحص كفاية تقارير الاختبار واعتماد المختبرات (ILAC)', true],
-        ['التأكد من حدود قدرة الإرسال والترددات المصرح بها', true],
+        ['تقرير الاختبار متوفر ويغطي الطراز نفسه', true],
+        ['تأكيد قدرة الإرسال (EIRP) مقابل تقرير الاختبار (مراجعة بشرية)', false],
         ['تعبئة نموذج الملحق رقم 1 الرسمي مع احتساب الرسوم', true],
       ],
       appFootNote: 'مُطابِق يعد الملف وحزمة الطلب، والجهة الرسمية (هيئة تنظيم قطاع الاتصالات) تتخذ القرار النهائي.',
@@ -597,8 +597,8 @@ export const STRINGS = {
       appChecklist: [
         ['Standards extracted from TRC Instructions No. 2/2025', true],
         ['European harmonized standards (ETSI EN) matched', true],
-        ['ILAC-accredited test reports verified', true],
-        ['EIRP transmission power within Jordanian bounds', true],
+        ['Test report present and covering the same model', true],
+        ['EIRP confirmed against the test report (human review)', false],
         ['Official Annex 1 form pre-filled with fee calculation', true],
       ],
       appFootNote: 'MUTABIQ prepares the dossier package. The official authority (TRC) makes the final decision.',

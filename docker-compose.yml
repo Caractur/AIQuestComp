@@ -1,0 +1,31 @@
+# Local PostgreSQL 17 + pgvector, pre-loaded with the MUTABIQ knowledge base.
+#
+#   docker compose up -d --wait
+#
+# On the first start (empty volume) Postgres runs the scripts in db/: it creates the icr_test
+# database and restores db/icr_snapshot.sql.gz into icr (7 instruments, 572 passages, bge-m3
+# embeddings), so no OCR, ingestion or embedding run is needed to try the app.
+# Credentials are for local development only. Reset with: docker compose down -v
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    container_name: mutabiq-postgres
+    environment:
+      POSTGRES_USER: icr
+      POSTGRES_PASSWORD: icr_dev_password
+      POSTGRES_DB: icr
+    ports:
+      - "127.0.0.1:${ICR_DB_PORT:-5433}:5432"
+    volumes:
+      - mutabiq-pgdata:/var/lib/postgresql/data
+      - ./db/01_create_test_db.sql:/docker-entrypoint-initdb.d/01_create_test_db.sql:ro
+      - ./db/icr_snapshot.sql.gz:/docker-entrypoint-initdb.d/02_icr_snapshot.sql.gz:ro
+    healthcheck:
+      # TCP only: the temporary server that runs the init scripts listens on a socket, not TCP.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U icr -d icr"]
+      interval: 2s
+      timeout: 3s
+      retries: 60
+
+volumes:
+  mutabiq-pgdata:

@@ -139,33 +139,49 @@ test('EIRP entry: empty is missing, invalid is an error, plausible numbers are a
   assert.deepEqual(parseEirp(' 23,5 '), { ok: true, value: 23.5, error: null });
 });
 
-test('default sample: report and EIRP are missing, so the file is not ready', () => {
-  const findings = assessmentFindings({ eirp: '', testReport: 'none' });
-  assert.deepEqual(findings.map((f) => f.status), ['supported', 'supported', 'missing', 'missing', 'not_applicable']);
-  assert.ok(findings.every((f) => /illustrative/.test(f.source))); // no finding claims a real clause
-  const r = readiness(findings);
-  assert.equal(r.ready, false);
-  assert.equal(r.blocking.length, 2);
-});
-
-test('a mismatched test report is a conflict; a hand-entered EIRP needs verification, never "supported"', () => {
-  const findings = assessmentFindings({ eirp: '23', testReport: 'mismatch' });
+test('phone sample without a test report: the report is missing evidence, so the file is not ready', () => {
+  const findings = assessmentFindings({ productPreset: 'phone-x1', eirp: '', testReport: 'none' });
   const byId = Object.fromEntries(findings.map((f) => [f.id, f]));
-  assert.equal(byId.report.status, 'conflict');
-  assert.match(byId.report.evidence, /DEMO-X0/);
-  assert.equal(byId.eirp.status, 'verify');
+  assert.equal(byId.report.status, 'missing');
+  assert.equal(byId.eirp.status, 'verify'); // datasheet value, still to be confirmed
+  assert.doesNotMatch(byId.eirp.evidence, /verified against test report/i);
+  assert.match(byId.eirp.evidence, /No matching test report/);
   assert.equal(readiness(findings).ready, false);
-  assert.ok(evidenceFiles({ testReport: 'mismatch' }).includes('RF_test_report_DEMO-X0.pdf'));
 });
 
-test('matching report plus entered EIRP is ready for applicant review, with verification still flagged', () => {
-  const state = { eirp: '23', testReport: 'match' };
-  const r = readiness(assessmentFindings(state));
+test('citations follow the TRC text: IMEI cites Art. 5(b)(5) and Art. 11 and is not asserted as supported', () => {
+  const findings = assessmentFindings({ productPreset: 'phone-x1', testReport: 'match' });
+  const all = findings.map((f) => `${f.requirement} ${f.source}`).join(' | ');
+  assert.doesNotMatch(all, /Article 12/);
+  assert.doesNotMatch(all, /Article 5\.b\.4|5\(b\)\(4\)/); // 5(b)(4) concerns test reports, not datasheets
+  const imei = findings.find((f) => f.id === 'imei');
+  assert.equal(imei.status, 'verify');
+  assert.match(imei.source, /Article 5\(b\)\(5\) and Article 11/);
+  assert.equal(findings.find((f) => f.id === 'fees').status, 'verify');
+});
+
+test('matching report gives a file ready for applicant review, with verification items still flagged', () => {
+  const findings = assessmentFindings({ productPreset: 'phone-x1', eirp: '', testReport: 'match' });
+  const r = readiness(findings);
   assert.equal(r.ready, true);
-  assert.equal(r.toVerify.length, 1);
-  const eirpRow = extractedData(state).find((d) => d.field.startsWith('RF output'));
-  assert.equal(eirpRow.confirmed, false);
-  assert.equal(eirpRow.source, 'Entered by applicant');
+  assert.ok(r.toVerify.map((f) => f.id).includes('eirp'));
+});
+
+test('EIRP provenance: datasheet value is confirmed; a different hand-entered value is not', () => {
+  const fromSheet = extractedData({ productPreset: 'phone-x1', eirp: '' }).find((d) => d.field.startsWith('RF output'));
+  assert.equal(fromSheet.confirmed, true);
+  assert.match(fromSheet.source, /Datasheet_DEMO-X1\.pdf, p\.2/);
+  const typed = extractedData({ productPreset: 'phone-x1', eirp: '19.5' }).find((d) => d.field.startsWith('RF output'));
+  assert.equal(typed.confirmed, false);
+  assert.equal(typed.source, 'Entered by applicant');
+});
+
+test('exempt wireless mouse: Annex 3 item (و) with its conformity condition; no fees arise', () => {
+  const findings = assessmentFindings({ productPreset: 'mouse-wm10' });
+  assert.deepEqual(findings.map((f) => f.status), ['not_applicable', 'not_applicable', 'supported']);
+  assert.match(findings[0].source, /Annex 3.*\(و\)/);
+  assert.match(findings[0].evidence, /provided the device conforms/);
+  assert.ok(evidenceFiles({ productPreset: 'mouse-wm10' }).includes('TRC_Annex3_Exemption_Certificate.pdf'));
 });
 
 test('every pose and icon renders decorative SVG without colliding ids', () => {

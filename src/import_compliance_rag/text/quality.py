@@ -13,6 +13,11 @@ Signals (all computed over Arabic-script tokens):
 * malformed tokens: a combining mark at the start of a token, digits glued inside letters, or
   characters from the U+0656..U+065F range that do not occur in Modern Standard Arabic prose.
 
+* missing function words: legacy-encoded text can be made of valid Arabic letters that form no
+  words (observed in TRC Instructions No. 2/2025, pages 4, 6, 9 and 10). Real Arabic prose is full of
+  function words (في، من، على، أن، التي ...): measured 0.125-0.20 of tokens on correctly extracted
+  pages, against 0.01-0.02 on the garbled ones.
+
 For Latin text the signals are ``(cid:NN)`` glyph placeholders and U+FFFD replacement characters.
 """
 
@@ -29,6 +34,13 @@ _RARE_MARKS = re.compile(r"[ٖ-ٟ]")
 _CID = re.compile(r"\(cid:\d+\)")
 
 REVERSED_LAM_ALEF_WEIGHT = 20.0
+# Function-word check: applied only when a page has enough Arabic tokens for the ratio to be stable.
+FUNCTION_WORD_MIN_TOKENS = 80
+FUNCTION_WORD_MIN_RATIO = 0.05
+_FUNCTION_WORDS = frozenset(
+    "في من على الى إلى أن ان او أو التي الذي هذه هذا ذلك عن مع لا ما كل أي اي بين قبل بعد حيث وفق".split()
+)
+_FOLD = str.maketrans({"أ": "ا", "إ": "ا", "آ": "ا", "ى": "ي"})
 
 
 @dataclass(frozen=True)
@@ -61,6 +73,13 @@ def assess_text_layer(text: str) -> TextQuality:
             reasons.append(f"reversed lam-alef in {reversed_la}/{len(tokens)} tokens")
         if malformed:
             reasons.append(f"malformed Arabic in {malformed}/{len(tokens)} tokens")
+        if len(tokens) >= FUNCTION_WORD_MIN_TOKENS:
+            folded = {w.translate(_FOLD) for w in _FUNCTION_WORDS}
+            words = [t.strip(".,:;()[]،؛«»\"'").translate(_FOLD) for t in tokens]
+            ratio = sum(1 for w in words if w in folded) / len(tokens)
+            if ratio < FUNCTION_WORD_MIN_RATIO:
+                penalties.append(1.0)
+                reasons.append(f"almost no Arabic function words ({ratio:.3f} of tokens): likely legacy-encoded text")
     visible = max(1, len(text.strip()))
     if replacement:
         penalties.append(replacement * 5 / visible * 10)

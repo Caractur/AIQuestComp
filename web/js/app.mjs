@@ -256,15 +256,15 @@ function getLocalizedFindings(state) {
     exemption: {
       requirement: 'انطباق الموافقة النوعية (فحص الإعفاء بموجب الملحق 3)',
       applies: 'معفى',
-      evidence: `يُصنف الجهاز ${preset.brand} ${preset.model} كفأرة حاسوب لاسلكية بموجب الملحق 3 البند (و).`,
-      next: 'لا يشترط الحصول على موافقة نوعية؛ يُسمح بإدخاله مباشرة بموجب الإعفاء.',
+      evidence: `الجهاز ${preset.brand} ${preset.model} فأرة لاسلكية مدرجة في الملحق 3 البند (و). ينطبق الإعفاء شريطة توافق الجهاز مع المواصفات الفنية الأساسية المعتمدة من الهيئة.`,
+      next: 'لا يُقدَّم طلب موافقة نوعية. الاحتفاظ بإقرار المطابقة الذي يثبت التوافق مع المواصفات الأساسية.',
       owner: 'مقدم الطلب',
       source: 'تعليمات رقم 2 لسنة 2025، الملحق رقم 3 (الأجهزة المعفاة)، البند (و)',
     },
     fees_exemption: {
-      requirement: 'جدول الرسوم (رسوم الأجهزة المعفاة - الملحق 2)',
-      applies: 'معفى',
-      evidence: 'معفى من رسم دراسة الطلب (25 دينار) ورسم الموافقة النوعية (50 دينار) استناداً للملحق 3.',
+      requirement: 'أجور الموافقة النوعية (الملحق 2)',
+      applies: 'لا',
+      evidence: 'لا يُقدَّم طلب موافقة نوعية لجهاز معفى، لذا لا تترتب أجور تقديم الطلب (25 دينار) ولا أجور الموافقة النوعية (50 دينار) الواردة في الملحق 2.',
       next: 'السير بإجراءات التخليص الجمركي بموجب الفاتورة والبيان الجمركي.',
       owner: 'الجمارك الأردنية / المستورد',
       source: 'تعليمات رقم 2 لسنة 2025، الملحق 2 والملحق 3',
@@ -286,12 +286,12 @@ function getLocalizedFindings(state) {
       source: 'تعليمات رقم 2 لسنة 2025، المادة 5 الفقرة (ب) البند 3',
     },
     specs: {
-      requirement: 'المواصفات الفنية وحزم الترددات (المادة 5.ب.4)',
+      requirement: 'المواصفات الفنية المصرّح بها (نطاقات التردد وعرض النطاق)',
       applies: 'نعم',
       evidence: `نشرة المواصفات ${preset.datasheetFile} تبين نطاقات التردد ${preset.frequencyRange} وعرض النطاق ${preset.bandwidth}.`,
-      next: 'لا يوجد. المواصفات ضمن الحدود المعتمدة في المملكة.',
+      next: 'لا يوجد. لا يتحقق هذا النموذج الأولي آلياً من توزيع الترددات.',
       owner: 'المستورد',
-      source: 'تعليمات رقم 2 لسنة 2025، المادة 5 الفقرة (ب) البند 4 وقائمة المعايير الفنية',
+      source: 'نشرة المواصفات (بيانات نموذجية)؛ المعايير مطابقة لقائمة القواعد الفنية لهيئة الاتصالات',
     },
     standards_rf: {
       requirement: 'المعايير القياسية للطيف الراديوي (EN 300 328 & EN 301 893)',
@@ -326,25 +326,27 @@ function getLocalizedFindings(state) {
       source: 'تعليمات رقم 2 لسنة 2025، المادة 5 الفقرة (هـ)',
     },
     eirp: {
-      requirement: 'التصريح بقدرة البث الإشعاعي (EIRP) ضمن الحدود المسموحة',
+      requirement: 'قدرة البث الإشعاعي المصرّح بها (EIRP)',
       applies: 'نعم',
       evidence: eirp.ok
-        ? `قدرة البث الإشعاعي المصرح بها: ${eirp.value} dBm (${Math.round(Math.pow(10, eirp.value / 10))} ميغاواط)، مطابقة لتقرير الفحص.`
+        ? `قدرة البث الإشعاعي المصرّح بها: ${eirp.value} dBm (${Math.round(Math.pow(10, eirp.value / 10))} ميلي واط). ${
+            state?.testReport === 'match' ? 'يجب مقارنتها بتقرير الفحص المعتمد.' : 'لا يوجد تقرير فحص مطابق يؤكدها بعد.'
+          } لا يتحقق هذا النموذج الأولي من حدود القدرة المقررة من الهيئة.`
         : 'قيمة قدرة البث الإشعاعي غير مدخلة أو غير محددة صراحة.',
-      next: eirp.ok ? 'تأكيد القيمة من مقدم الطلب قبل التوقيع الرسمي.' : 'إدخال قدرة البث الإشعاعي بوحدة dBm من تقرير الفحص.',
+      next: eirp.ok ? 'تأكيد قيمة القدرة النهائية مقابل تقرير الفحص قبل التوقيع.' : 'إدخال قدرة البث الإشعاعي بوحدة dBm من تقرير الفحص.',
       owner: 'المستورد',
-      source: 'تعليمات رقم 2 لسنة 2025، الملحق رقم 1 (القسم الفني 5)',
+      source: 'نشرة المواصفات (بيانات نموذجية) / إدخال مقدم الطلب',
     },
     imei: {
-      requirement: 'التسجيل في قاعدة بيانات المعرف الدولي (IMEI / GSMA) واللصاقة (المادة 5.ب.5 والمادة 12)',
+      requirement: 'تسجيل رقم الهوية الدولية (IMEI / GSMA) وإدراجه على بطاقة البيانات',
       applies: 'نعم',
-      evidence: 'رمز تعريف الهاتف مسجل في قاعدة بيانات GSMA الدولية ومطابق لشروط بطاقة البيان واللصاقة.',
-      next: 'التأكد من تثبيت رمز IMEI والباركود على العبوة التجارية.',
-      owner: 'المستورد / GSMA',
-      source: 'تعليمات رقم 2 لسنة 2025، المادة 5 الفقرة (ب) البند 5 والمادة 12',
+      evidence: 'لا يوجد ملف مرفق يبين إدراج رقم IMEI/TAC في قاعدة بيانات GSMA. تشترط المادة 5(ب)(5) شهادة تسجيل من GSMA فقط في حال عدم إدراجه، وتشترط المادة 11 ذكر رقم IMEI على بطاقة بيانات الأجهزة الخلوية.',
+      next: 'التأكد من إدراج رمز TAC في قاعدة بيانات GSMA، أو إرفاق شهادة تسجيل IMEI الصادرة عنها.',
+      owner: 'المستورد / المصنّع',
+      source: 'تعليمات رقم 2 لسنة 2025، المادة 5(ب)(5) والمادة 11',
     },
     fees: {
-      requirement: 'رسوم الموافقة النوعية ودراسة الطلب (الملحق 2)',
+      requirement: 'أجور الموافقة النوعية المستحقة (الملحق 2)',
       applies: 'نعم',
       evidence: `الرسوم المستحقة: ${preset.fees.application} د.أ دراسة طلب + ${preset.fees.approval} د.أ إصدار شهادة (المجموع: ${preset.fees.total} دينار أردني).`,
       next: 'إيداع وصل الدفع المالي لحساب الهيئة عند تقديم الملف.',
@@ -644,7 +646,7 @@ const VIEWS = {
           }
           if (event.target.closest('[data-fetch-link]')) {
             const btn = event.target.closest('[data-fetch-link]');
-            btn.textContent = t().lang === 'ar' ? '✓ تم الاستخراج' : '✓ Specs Extracted';
+            btn.textContent = t().lang === 'ar' ? '✓ تم تحميل مواصفات العيّنة' : '✓ Sample specs loaded';
             btn.classList.add('button-primary');
             setTimeout(() => draw(), 600);
             return;
@@ -1118,10 +1120,13 @@ function renderAssessmentPanel(tab) {
           <div>
             <div class="chips"><span class="chip chip-dark-teal">${esc(isAr ? 'المملكة الأردنية الهاشمية · هيئة تنظيم قطاع الاتصالات' : 'Hashemite Kingdom of Jordan · TRC')}</span></div>
             <h2 class="trc-official-title" style="margin-top:0.6rem">${esc(a.prefilledTitle)}</h2>
-            <p class="small-note" style="margin:0">${esc(isAr ? 'نموذج رسمي صادر بموجب تعليمات تنظيم شروط وإجراءات الحصول على الموافقات النوعية لأجهزة الاتصالات وإدخالها لسنة 2025' : 'Official statutory form issued under TRC Type Approval & Import Instructions No. 2 of 2025')}</p>
+            <p class="small-note" style="margin:0">${esc(isAr ? 'مسودة معبأة وفق نموذج الملحق رقم (1) من تعليمات هيئة تنظيم قطاع الاتصالات رقم (2) لسنة 2025' : 'Draft filled in on the layout of Annex (1) to TRC Instructions No. 2 of 2025')}</p>
           </div>
           <button type="button" class="button button-secondary button-sm" data-print-form>${icon('folder')} ${esc(a.printFormBtn)}</button>
         </div>
+        <p class="draft-stamp" role="note">${esc(isAr
+          ? 'مسودة أعدّها مُطابِق ببيانات عيّنة. ليست صادرة عن هيئة تنظيم قطاع الاتصالات ولم تُقدَّم إليها.'
+          : 'Draft prepared by MUTABIQ with sample data. Not issued by or submitted to the TRC.')}</p>
       </div>
 
       <!-- Section 1: Required Action -->

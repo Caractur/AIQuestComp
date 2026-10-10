@@ -37,7 +37,7 @@ from import_compliance_rag.text.arabic import normalize_for_retrieval
 log = logging.getLogger(__name__)
 
 # Bump whenever extraction, structure parsing or chunking would produce different output.
-PIPELINE_VERSION = "2026.10.2"
+PIPELINE_VERSION = "2026.10.6"
 
 
 class RegistryError(ValueError):

@@ -150,7 +150,7 @@ export const DEFAULT_COMPANY = {
   fax: '+962 6 580 1235',
   poBox: 'ص.ب 9214 عمان 11192',
   poBoxEn: 'P.O. Box 9214 Amman 11192',
-  email: 'compliance@tech-import.jo',
+  email: 'compliance@example.com', // fictional sample contact
   liaisonOfficer: 'أحمد العوضي (مدير الامتثال)',
   liaisonOfficerEn: 'Ahmad Al-Awadi (Compliance Officer)',
   importCard: 'IMP-2025-4421',
@@ -291,8 +291,6 @@ export function getProductPreset(id) {
   return PRODUCT_PRESETS.find((p) => p.id === id) || PRODUCT_PRESETS[0];
 }
 
-export const MODEL = 'DEMO-X1';
-export const EIRP_RANGE = { min: -10, max: 60 }; // plausibility bounds for a hand-entered dBm value
 
 /** Extracted product data with provenance; EIRP comes from the applicant when no file states it. */
 export function extractedData(state) {
@@ -308,10 +306,17 @@ export function extractedData(state) {
     { field: 'Frequency range (Tx/Rx)', value: preset.frequencyRange, source: `${preset.datasheetFile}, p.2`, confirmed: true },
     { field: 'Bandwidth', value: preset.bandwidth, source: `${preset.datasheetFile}, p.2`, confirmed: true },
     { field: 'Battery / Power supply', value: preset.battery, source: `${preset.datasheetFile}, p.3`, confirmed: true },
-    eirp.ok
-      ? { field: 'RF output power (EIRP)', value: `${eirp.value} dBm`, source: 'Datasheet & RF Report', confirmed: true }
-      : { field: 'RF output power (EIRP)', value: null, source: '—', confirmed: false, missing: true },
+    !eirp.ok
+      ? { field: 'RF output power (EIRP)', value: null, source: '—', confirmed: false, missing: true }
+      : enteredByHand(state, preset)
+        ? { field: 'RF output power (EIRP)', value: `${eirp.value} dBm`, source: 'Entered by applicant', confirmed: false }
+        : { field: 'RF output power (EIRP)', value: `${eirp.value} dBm`, source: `${preset.datasheetFile}, p.2`, confirmed: true },
   ];
+}
+
+/** True when the applicant typed an EIRP value different from the one the sample datasheet states. */
+function enteredByHand(state, preset) {
+  return state?.eirp !== undefined && state.eirp !== '' && String(state.eirp).trim() !== String(preset.defaultEirp);
 }
 
 /** Parse a hand-entered EIRP value. Returns {ok, value} or {ok:false, error} (empty is not an error). */
@@ -344,9 +349,12 @@ export function evidenceFiles(state) {
   return files;
 }
 
-const TRC_SOURCE = 'TRC Instructions No. 2 of 2025 & Technical Standards (Official Knowledge Base)';
 
-/** Findings grounded in the real TRC Instructions No. 2/2025 and Technical Standards. */
+/**
+ * Findings for the sample products. Requirement citations point to TRC Instructions No. 2/2025, its
+ * annexes and the TRC technical standards list (checked against the source PDFs); the products,
+ * documents and values are fictional sample data.
+ */
 export function assessmentFindings(state) {
   const preset = getProductPreset(state?.productPreset);
   const rawEirp = state?.eirp !== undefined && state?.eirp !== '' ? state.eirp : preset.defaultEirp;
@@ -360,17 +368,17 @@ export function assessmentFindings(state) {
         requirement: 'TRC Type Approval Applicability (Annex 3 Exemption Check)',
         applies: 'Exempt',
         status: 'not_applicable',
-        evidence: `${preset.brand} ${preset.model} is classified as a Wireless Mouse under TRC Annex 3, Item (و).`,
-        next: 'No type approval required. Import directly under exemption rules.',
+        evidence: `${preset.brand} ${preset.model} is a wireless mouse, listed in TRC Annex 3, Item (و). The exemption applies provided the device conforms to TRC's basic approved technical specifications.`,
+        next: 'No type approval application. Keep the DoC showing conformity with the basic specifications.',
         owner: 'Applicant',
         source: 'TRC Instructions No. 2/2025, Annex 3 (Exemptions), Item (و)',
       },
       {
         id: 'fees_exemption',
-        requirement: 'Fee Schedule (Annex 2 Fees for Exempted Equipment)',
-        applies: 'Exempt',
-        status: 'supported',
-        evidence: 'Exempt from the 25 JOD application fee and 50 JOD approval fee pursuant to Annex 3.',
+        requirement: 'Type approval fees (Annex 2)',
+        applies: 'No',
+        status: 'not_applicable',
+        evidence: 'No type approval application is made for an exempted device, so the 25 JOD application fee and 50 JOD approval fee in Annex 2 do not arise.',
         next: 'Proceed to customs clearance with standard commercial invoice.',
         owner: 'Jordan Customs / Applicant',
         source: 'TRC Instructions No. 2/2025, Annex 2 & Annex 3',
@@ -401,13 +409,13 @@ export function assessmentFindings(state) {
     },
     {
       id: 'specs',
-      requirement: 'Technical Specifications & Spectrum Coverage (Article 5.b.4)',
+      requirement: 'Technical specifications declared (frequency bands, bandwidth)',
       applies: 'Yes',
       status: 'supported',
       evidence: `${preset.datasheetFile} specifies ${preset.frequencyRange} and bandwidth ${preset.bandwidth}.`,
-      next: 'None. Specifications meet TRC frequency allocation limits.',
+      next: 'None. Frequency allocations are not checked automatically in this prototype.',
       owner: 'Applicant',
-      source: 'TRC Instructions No. 2/2025, Article 5, Para (b), Clause 4 & Technical Standards Schedule',
+      source: 'Sample datasheet; standards matched against the TRC Technical Standards list',
     },
     {
       id: 'standards_rf',
@@ -472,13 +480,15 @@ export function assessmentFindings(state) {
     eirp.ok
       ? {
           id: 'eirp',
-          requirement: 'Declared Transmission Power (EIRP) within Regulatory Bounds',
+          requirement: 'Declared transmission power (EIRP)',
           applies: 'Yes',
           status: 'verify',
-          evidence: `Declared EIRP of ${eirp.value} dBm (${Math.round(Math.pow(10, eirp.value / 10))} mW) verified against test report.`,
-          next: 'Applicant must confirm final EIRP value before signing.',
+          evidence: `Declared EIRP ${eirp.value} dBm (${Math.round(Math.pow(10, eirp.value / 10))} mW), ${
+            enteredByHand(state, preset) ? 'entered by the applicant' : `from ${preset.datasheetFile}`
+          }. ${state?.testReport === 'match' ? 'Compare it with the accredited test report.' : 'No matching test report confirms it yet.'} No TRC power limit is checked in this prototype.`,
+          next: 'Confirm the final EIRP value against the test report before signing.',
           owner: 'Applicant',
-          source: 'TRC Instructions No. 2/2025, Annex 1 (Technical Section 5)',
+          source: 'Sample datasheet / applicant entry',
         }
       : {
           id: 'eirp',
@@ -488,7 +498,7 @@ export function assessmentFindings(state) {
           evidence: 'Missing declared EIRP value.',
           next: 'Enter transmission power in dBm from test report.',
           owner: 'Applicant',
-          source: 'TRC Instructions No. 2/2025, Annex 1 (Section 5)',
+          source: 'Sample datasheet / applicant entry',
         },
   );
 
@@ -496,22 +506,22 @@ export function assessmentFindings(state) {
   if (preset.id === 'phone-x1') {
     findings.push({
       id: 'imei',
-      requirement: 'International Mobile Equipment Identity (IMEI) GSMA Database (Article 5.b.5)',
+      requirement: 'IMEI registration (GSMA) and IMEI on the data label',
       applies: 'Yes',
-      status: 'supported',
-      evidence: 'Cellular TAC registered under GSMA international terminal database; label conforms to Article 12.',
-      next: 'Ensure IMEI stickers and electronic barcode are present on commercial packaging.',
-      owner: 'Importer / GSMA',
-      source: 'TRC Instructions No. 2/2025, Article 5, Para (b), Clause 5 & Article 12',
+      status: 'verify',
+      evidence: 'No uploaded file shows whether the IMEI/TAC is in the GSMA database. Article 5(b)(5) requires a GSMA IMEI registration certificate only if it is not; Article 11 requires the IMEI on the data label of cellular devices.',
+      next: 'Confirm the TAC is in the GSMA database, or attach the GSMA IMEI registration certificate.',
+      owner: 'Applicant / manufacturer',
+      source: 'TRC Instructions No. 2/2025, Article 5(b)(5) and Article 11',
     });
   }
 
   // Fees check (Annex 2)
   findings.push({
     id: 'fees',
-    requirement: 'Type Approval & Application Fees (Annex 2)',
+    requirement: 'Type approval fees due (Annex 2)',
     applies: 'Yes',
-    status: 'supported',
+    status: 'verify',
     evidence: `Payable fees: ${preset.fees.application} JOD application review + ${preset.fees.approval} JOD approval certificate (Total: ${preset.fees.total} JOD).`,
     next: 'Issue official payment receipt to TRC accounts upon dossier submission.',
     owner: 'Applicant',

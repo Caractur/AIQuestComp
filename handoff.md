@@ -55,6 +55,16 @@ verifies currency and amendments.
 | `mit-import-export-licenses-system-114-2004` | Licences and Cards Bylaw 114/2004 (Gazette 4677, p. 4603, 30/9/2004; amended by Bylaw 58/2005) | ar | `66cc2f117a84` | font recovery, 4 pages, ≥ 0.98 |
 | `moa-agriculture-law-13-2015` | Agriculture Law 13/2015 (Gazette 5337, p. 1868, 16/4/2015; amended by Laws 12/2017 and 2/2020) | ar | `d522d79735e9` | font recovery, 33 pages, ≥ 0.84 |
 | `ustr-jordan-fta-rules-of-origin` | US–Jordan FTA Annex 2.2 Rules of Origin | en | `5438c7a9f4b1` | clean text layer, 5 pages |
+| `trc-type-approval-instructions-2-2025` | TRC Type Approval Instructions No. 2/2025 (Official Gazette p. 4477; issue no. not verified) | ar | — | OCR + font recovery (pp. 4, 6); 24 articles, several numbers **inferred** from sequence |
+| `trc-type-approval-annexes-2-2025` | Annexes 1–4: form, fees (25 / 50 JOD), exemptions, private use | ar | — | scanned, OCR only (confidence 42–83, flagged for review) |
+| `trc-technical-standards-specifications` | TRC technical standards list (151 pp., ETSI/EN codes) | mixed | — | clean text layer |
+
+TRC documents were added by Ahmad (2026-10-10). Spot-checks against the rendered pages confirmed the
+fee amounts, Annex 3 item (و) "Wireless Mouse", Art. 5(b)(3)/(5) and 5(e), and the standards page
+numbers; the label article is Art. 11. The TRC Instructions' text layer is mojibake that passed the old
+quality check; a function-word ratio check (`text/quality.py`) now rejects such pages. Inline headings
+("المادة (5): ...", OCR variants, tatweel) are parsed (`ingestion/structure.py`). `PIPELINE_VERSION` is
+`2026.10.6`; the knowledge base holds 7 instruments / 572 passages embedded with bge-m3.
 
 The amendment references come from the documents' own annotations, not from an independent check.
 **Still needed:** JSMO technical regulations, JFDA food/cosmetics import requirements, the Customs
@@ -86,7 +96,7 @@ New in session 2 (details in `docs/architecture.md` §1–4):
 
 ## 5. Code state
 
-Package `src/import_compliance_rag/`. `uv run ruff check src` passes. **`uv run pytest`: 64 passed**
+Package `src/import_compliance_rag/`. `uv run ruff check src` passes. **`uv run pytest`: 66 passed**
 (55 unit, 5 regression on the real PDFs, 4 integration against `icr_test`).
 
 | Area | Files | State |

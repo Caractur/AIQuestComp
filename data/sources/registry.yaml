@@ -103,8 +103,9 @@
   document_type: instructions
   binding_nature: binding
   legal_status: unknown
-  status_note: Official instructions published in the Official Gazette No. 5970, 2025.
-  provenance_note: Telecommunications Regulatory Commission type approval regulations.
+  status_note: Published in the Official Gazette (page 4477); the issue number is not verified. Issued under Article 12(a)(2) and Article 51 of Telecommunications Law No. 13 of 1995.
+  gazette_reference: Official Gazette, p. 4477 (2025)
+  provenance_note: Telecommunications Regulatory Commission type approval regulations. Text layer is corrupted; text is extracted with OCR and flagged for review.
   product_categories: [telecom, terminal_equipment, wireless, phones]
   local_file: trc-type-approval-instructions-2-2025/source.pdf
 
@@ -113,7 +114,7 @@
   title_en: TRC Technical Standards and Specifications for Telecommunications Equipment
   issuing_authority: Telecommunications Regulatory Commission (TRC)
   jurisdiction: JO
-  original_language: ar
+  original_language: mixed
   document_type: standard
   binding_nature: binding
   legal_status: unknown
@@ -132,7 +133,7 @@
   binding_nature: binding
   legal_status: unknown
   status_note: Annexes 1-4 to TRC Instructions No. 2 of 2025.
-  provenance_note: Official annexes specifying application form, fee schedules, exempted devices, and personal use quotas.
+  provenance_note: Official annexes specifying application form, fee schedules, exempted devices, and personal use quotas. Scanned document without a text layer; text is OCR and flagged for review.
   product_categories: [telecom, fees, exemptions, forms]
   local_file: trc-type-approval-annexes-2-2025/source.pdf
 

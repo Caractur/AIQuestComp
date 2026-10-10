@@ -138,7 +138,7 @@ export const STRINGS = {
       workingTitle: 'يعمل فعلياً',
       workingBadge: 'نشط',
       workingList: [
-        'أربعة تشريعات وقوانين أردنية رسمية مفهرسة ومقسمة إلى مواد وتعريفات وتعديلات.',
+        'سبعة نصوص رسمية مفهرسة، منها تعليمات هيئة الاتصالات رقم (2) لسنة 2025 وملاحقها وقائمة القواعد الفنية، مقسمة إلى مواد وتعريفات وتعديلات.',
         'بحث فوري باللغتين العربية والإنجليزية مع إبراز المادة والصفحة ورقم الإصدار لكل نتيجة.',
         'تصنيف مستويات اليقين: الوضع القانوني قيد التحقق، نصوص مسترجعة، ونصوص معدلة.',
       ],
@@ -147,7 +147,7 @@ export const STRINGS = {
       demoBadge: 'محاكاة',
       demoList: [
         'تجربة تقييم الهاتف الذكي DEMO-X1 تعمل على بيانات عيّنة افتراضية.',
-        'تعليمات هيئة الاتصالات قيد الإضافة لاحقاً، لذا لا تستشهد نتائج التجربة بنصوص حقيقية بعد.',
+        'استشهادات المتطلبات تشير إلى تعليمات هيئة الاتصالات وملاحقها وتمت مطابقتها مع النصوص الرسمية؛ أما الأجهزة والوثائق فافتراضية.',
         'الاستنتاج الذكي عبر النماذج اللغوية (LLM) مخطط له في المرحلة القادمة.',
       ],
       seeSources: 'استعراض قاعدة المعرفة',
@@ -174,7 +174,7 @@ export const STRINGS = {
       badge2: 'نطاق التجربة: أجهزة الاتصالات · هيئة تنظيم قطاع الاتصالات (TRC)',
       title: 'التجربة الفنية: <span class="accent-text">حالة متكاملة خطوة بخطوة</span>',
       lede: 'الموافقة النوعية لهاتف ذكي: من المدخلات إلى النتائج إلى مسودة الطلب الرسمي. غيّر الأدلة وشاهد كيف تنعكس النتائج فوراً.',
-      notice: '<strong>شاشة إيضاحية · بيانات عيّنة.</strong> الجهاز والشركة والأرقام افتراضية لأغراض العرض التوضيحي. المتطلبات تمثل نطاق التجربة: تعليمات هيئة الاتصالات قيد الإضافة لاحقاً، لذا لا تستشهد النتائج بمادة حقيقية بعد.',
+      notice: '<strong>بيانات عيّنة.</strong> الأجهزة والشركة والوثائق والأرقام افتراضية. تشير الاستشهادات إلى تعليمات هيئة تنظيم قطاع الاتصالات رقم (2) لسنة 2025 وملاحقها وقائمة القواعد الفنية، وهي مفهرسة الآن في قاعدة المعرفة وتمت مطابقتها مع ملفات PDF الرسمية. ولا يغني ذلك عن المراجعة القانونية.',
       flowTitle: 'مسار التجربة',
       flowSteps: [
         'إدخال البيانات والوثائق',
@@ -199,7 +199,7 @@ export const STRINGS = {
       stage2Eyebrow: 'المرحلة الثانية: بيانات المنتج والمواصفات الفنية',
       presetLabel: 'اختر نموذجاً جاهزاً للتجربة أو أدخل منتجك',
       productLinkLabel: 'رابط المنتج أو الكتالوج التقني',
-      fetchLinkBtn: 'استخراج المواصفات من الرابط',
+      fetchLinkBtn: 'تحميل مواصفات العيّنة (عرض توضيحي)',
       evidenceLabel: 'وثائق المواصفات والاختبار (Datasheet / DoC / Test Report)',
       sampleReportLabel: 'حالة تقرير الاختبار (اعتماد المختبر)',
       reports: {
@@ -213,7 +213,7 @@ export const STRINGS = {
       eirpHelpValid: 'dBm، مدخل مؤكد من التقرير الفني.',
       eirpErrorNumeric: 'يرجى إدخال رقم بوحدة dBm، مثلاً 23.',
       eirpErrorRange: 'المتوقع قيمة بين -10 و 60 dBm.',
-      panelFootNote: 'القيم مستخرجة مباشرة من وثائق المواصفات وربطها بنصوص الهيئة الرسمية.',
+      panelFootNote: 'القيم مأخوذة من نشرات المواصفات النموذجية، والمعايير مطابقة لقائمة القواعد الفنية لهيئة الاتصالات. قراءة المواصفات من رابط المنتج غير متاحة بعد.',
       runAssessmentBtn: 'تشغيل الفحص الفني والمطابقة',
 
       // Findings Panel
@@ -254,7 +254,7 @@ export const STRINGS = {
       ],
       appFootNote: 'مُطابِق يعد الملف وحزمة الطلب، والجهة الرسمية (هيئة تنظيم قطاع الاتصالات) تتخذ القرار النهائي.',
       backToFindingsBtn: 'العودة إلى النتائج',
-      printFormBtn: 'طباعة نموذج الطلب الرسمي (PDF)',
+      printFormBtn: 'طباعة المسودة (PDF)',
     },
 
     ask: {
@@ -487,7 +487,7 @@ export const STRINGS = {
       workingTitle: 'Working',
       workingBadge: 'Working',
       workingList: [
-        'Four Jordanian instruments parsed into articles, definitions and amendment notes.',
+        'Seven official texts indexed, including TRC Instructions No. 2/2025, its annexes and the technical standards list, parsed into articles, definitions and amendment notes.',
         'Search in Arabic or English, with article, page and version for every result.',
         'Uncertainty labelled: unverified legal status, recovered text, superseded wording.',
       ],
@@ -496,7 +496,7 @@ export const STRINGS = {
       demoBadge: 'Illustrative',
       demoList: [
         'The DEMO-X1 smartphone walkthrough runs on fictional sample data.',
-        'The TRC trial texts are not in the knowledge base yet, so its findings cite no real clause.',
+        'Requirement citations point to the TRC Instructions and annexes and were checked against the official texts; the devices and documents are fictional.',
         'LLM reasoning over retrieved text is planned, not built.',
       ],
       seeSources: 'See the knowledge base',
@@ -523,7 +523,7 @@ export const STRINGS = {
       badge2: 'Trial scope: telecom devices · TRC',
       title: 'Technical trial: <span class="accent-text">one case, end to end</span>',
       lede: 'Type approval for a smartphone, from inputs to findings to a draft application. Change the evidence and watch every finding follow.',
-      notice: '<strong>Illustrative screen · sample data.</strong> The device, company and values are fictional. The requirements are placeholders for the trial scope: TRC texts are not in this prototype’s knowledge base yet, so no finding cites a real clause.',
+      notice: '<strong>Sample data.</strong> The devices, company, documents and values are fictional. Requirement citations point to TRC Instructions No. 2 of 2025, its annexes and the TRC technical standards list, now indexed in the knowledge base and checked against the official PDFs. Not a substitute for legal review.',
       flowTitle: 'Demo flow',
       flowSteps: [
         'Enter the inputs',
@@ -548,7 +548,7 @@ export const STRINGS = {
       stage2Eyebrow: 'Stage 2: Product Specifications & Evidence',
       presetLabel: 'Product Demo Preset / Select Device',
       productLinkLabel: 'Product link or online catalog URL',
-      fetchLinkBtn: 'Extract Specs from Link',
+      fetchLinkBtn: 'Load sample specs (demo)',
       evidenceLabel: 'Technical documents (Datasheet, DoC, Accredited Test Report)',
       sampleReportLabel: 'Accredited Lab Test Report Status',
       reports: {
@@ -562,7 +562,7 @@ export const STRINGS = {
       eirpHelpValid: 'dBm, verified against technical test report.',
       eirpErrorNumeric: 'Enter a number in dBm, for example 23.',
       eirpErrorRange: 'Expected a value between -10 and 60 dBm.',
-      panelFootNote: 'Values extracted directly from spec sheets and matched to TRC regulatory standards.',
+      panelFootNote: 'Values come from the sample spec sheets; standards are matched to the TRC technical standards list. Reading specs from a product link is not built yet.',
       runAssessmentBtn: 'Run Technical Assessment',
 
       // Findings Panel
@@ -603,7 +603,7 @@ export const STRINGS = {
       ],
       appFootNote: 'MUTABIQ prepares the dossier package. The official authority (TRC) makes the final decision.',
       backToFindingsBtn: 'Back to Findings',
-      printFormBtn: 'Print / Export Application (PDF)',
+      printFormBtn: 'Print draft (PDF)',
     },
 
     ask: {

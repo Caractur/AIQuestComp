@@ -101,3 +101,25 @@ def test_cross_references_internal_and_external():
     refs = find_cross_references("وفقا لاحكام المادة (٣٥) من هذا القانون وكذلك المادة 12 من قانون الجمارك")
     assert refs[0][1:] == ("35", True)
     assert refs[1][1:] == ("12", False)
+
+
+def test_inline_trc_style_headings_with_ocr_variants_and_tatweel():
+    text = "\n".join(
+        [
+            "المادة :)١( تسمى هذه التعليمات تعليمات شروط الموافقة.",
+            "المادة (2): يكون للكلمات التالية المعاني المخصصة لها.",
+            "المادة (”): تصنف أجهزة الاتصالات على النحو التالي:",
+            "المـادة (٤): يقتصر التقدم للحصول على الموافقة.",
+            "الم ـادة (٥): يقدم طلب الحصول على الموافقة النوعية.",
+            "المادة اله ١ ):",
+            "نص المادة السادسة.",
+            "المادة (٦) من هذا القانون لا تبدأ مادة جديدة.",
+        ]
+    )
+    articles = _articles([(1, text)])
+    assert [a.number for a in articles] == ["1", "2", "3", "4", "5", "6"]
+    assert articles[2].number_source is NumberSource.INFERRED  # unreadable OCR digit
+    assert articles[5].number_source is NumberSource.INFERRED  # garbled heading
+    assert articles[0].lines[0].text == "تسمى هذه التعليمات تعليمات شروط الموافقة."
+    # An in-text reference at the start of a line stays body text of the current article.
+    assert "المادة (٦) من هذا القانون" in articles[5].text

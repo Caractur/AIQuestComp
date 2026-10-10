@@ -55,3 +55,13 @@ def test_quality_accepts_clean_arabic():
 def test_quality_flags_cid_placeholders_and_empty_pages():
     assert assess_text_layer("Rules (cid:12)(cid:13) of origin").score < 0.85
     assert assess_text_layer("   ").score == 0.0
+
+
+def test_quality_flags_legacy_encoded_arabic_without_function_words():
+    # Valid Arabic letters that form no words (as in the TRC instructions' broken text layer).
+    garbled = " ".join(["الالــاا العكئيزـــج الر وئياســـزج المنلمــاا الر لزـــج التنـــاد"] * 20)
+    quality = assess_text_layer(garbled)
+    assert quality.score < 0.85
+    assert any("function words" in r for r in quality.reasons)
+    prose = " ".join(["يقدم الطلب إلى الهيئة على النموذج المعتمد في هذه التعليمات من قبل المستورد"] * 10)
+    assert assess_text_layer(prose).score == 1.0

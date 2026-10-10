@@ -112,9 +112,13 @@ def _parse_arabic(lines: list[Line]) -> tuple[list[Segment], list[str]]:
             section = [line.text.strip()]
             continue
         heading = _arabic_heading_number(line.text)
+        body = None
         if heading is None:
-            _append_body(segments[-1], line)
-            continue
+            inline = _inline_heading(line.text)
+            if inline is None:
+                _append_body(segments[-1], line)
+                continue
+            heading, body = (inline[0], ""), inline[1]
         number, suffix = heading
         label, source = _resolve_number(number, suffix, previous, line, warnings)
         previous = int(label.split()[0])
@@ -123,19 +127,54 @@ def _parse_arabic(lines: list[Line]) -> tuple[list[Segment], list[str]]:
                 kind="article",
                 number=label,
                 number_source=source,
-                raw_heading=line.text.strip(),
+                raw_heading=line.text.strip() if body is None else line.text[: len(line.text) - len(body)].strip(),
                 section_path=list(section),
             )
         )
+        if body:
+            segments[-1].lines.append(Line(body, line.page))
     if len(segments) == 1:
         warnings.append("no article headings found; document will be chunked without structure")
         segments[0].kind = "text"
     return segments, warnings
 
 
+# Inline headings ("المادة (5): يُقدم الطلب ...") as used by TRC instructions. OCR may reverse the
+# brackets and move the colon ("المادة :)١١( أ- ..."). A colon attached to the number is required:
+# it distinguishes a heading from an in-text reference such as "المادة (٦) من هذا القانون".
+_INLINE_HEADING = re.compile(
+    r"^\s*(?:ال)?ماد(?:ة|ه)\s*(?::\s*[()]\s*(?P<a>[^\s():]{1,3})\s*[()]|[()]\s*(?P<b>[^\s():]{1,3})\s*[()]\s*:)\s*(?P<rest>.*)$"
+)
+
+
+_TATWEEL_WORD = re.compile(r"ا\s*ل\s*م\s*ـ*\s*ـ*ا\s*ـ*د\s*ـ*([ةه])")
+
+
+def _untatweel(text: str) -> str:
+    """Normalize stretched headings ("المـادة", "الم ـادة") to "المادة" before matching."""
+    return _TATWEEL_WORD.sub(lambda m: "الماد" + m.group(1), text)
+
+
+_GARBLED_HEADING = re.compile(r"^\s*(?:ال)?ماد(?:ة|ه)\s*\(?\s*(?:[^\s()]{1,3}\s*){1,3}\)\s*:\s*(?P<rest>.*)$")
+
+
+def _inline_heading(text: str) -> tuple[int | None, str] | None:
+    """(number or None if unreadable, remaining text) for an inline article heading, else None."""
+    text = _untatweel(text)
+    match = _INLINE_HEADING.match(text)
+    if not match:
+        # A short line "المادة <garbled> ):" is still a heading whose number OCR could not read
+        # (observed: "المادة اله ١ ):", "المادة (؛ ؟١):"); its number is inferred from the sequence.
+        garbled = _GARBLED_HEADING.match(text)
+        return (None, garbled.group("rest").strip()) if garbled else None
+    token = normalize_digits(match.group("a") or match.group("b"))
+    number = int(token) if token.isdigit() else None
+    return number, match.group("rest").strip()
+
+
 def _arabic_heading_number(text: str) -> tuple[int | None, str] | None:
     """Return (number or None if unreadable, suffix) when ``text`` is an article heading line."""
-    stripped = text.strip()
+    stripped = _untatweel(text).strip()
     tokens = stripped.split()
     if not tokens or len(tokens) > MAX_HEADING_TOKENS + 2:
         return None

@@ -3,6 +3,16 @@
 _Last updated: 2026-10-09, end of the second working session (retrieval tuning added at the end). Source of truth for decisions and
 state. Read this first. Design details and their evidence: `docs/architecture.md`. Setup: `README.md`._
 
+## 0. Hackathon submission (2026-10-10)
+
+Judges clone the repo and run it themselves, so the README is written as the run guide. `docker compose up -d --wait`
+restores `db/icr_snapshot.sql.gz` (pg_dump of `icr`: 7 instruments, 572 passages, bge-m3 embeddings) into a fresh
+pgvector container; `uv sync --extra ml` and `serve` complete the setup without OCR or ingestion. Verified from a fresh
+clone on Windows 11: compose restore, `uv sync`, serve, search (ar, en→ar, article lookup), lexical mode, pytest
+(61 passed, 5 regression skipped without raw PDFs). Refresh the snapshot after any re-ingest (README §10).
+The presentation is `docs/MUTABIQ-presentation.pdf`. UI fixes this session: 375 px overflow (search options, TRC form
+table); the application readiness list no longer claims EIRP limits are checked.
+
 ## 1. What this project is
 
 An evidence-grounded, bilingual (Arabic/English) regulatory RAG platform for businesses importing

@@ -729,6 +729,8 @@ const VIEWS = {
         const results = $('.results', root);
         const status = $('.service-status', root);
         let controller = null;
+        // main outlives this view, so its listener must go with the view or revisits stack them
+        const listeners = new AbortController();
 
         form.elements.history.checked = ui.ask.history;
         form.elements.expand.checked = ui.ask.expand;
@@ -808,7 +810,7 @@ const VIEWS = {
             more.setAttribute('aria-expanded', String(open));
             more.textContent = open ? ask.showLess : ask.showFull;
           }
-        });
+        }, { signal: listeners.signal });
 
         const initial = params.get('q') || '';
         if (initial) {
@@ -818,6 +820,7 @@ const VIEWS = {
         return () => {
           controller?.abort();
           health.abort();
+          listeners.abort();
         };
       },
     };

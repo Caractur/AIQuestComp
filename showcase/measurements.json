@@ -1,0 +1,431 @@
+{
+ "measured_at": "2026-10-10T08:02:16.427952+00:00",
+ "mode": "dense",
+ "model": "BAAI/bge-m3",
+ "model_load_s": 14.7,
+ "machine": "Windows 11, 32 threads, CPU only",
+ "runs_per_question": 5,
+ "corpus": [
+  {
+   "id": "mit-import-export-law-21-2001",
+   "pages": 3,
+   "passages": 27,
+   "words": 1005,
+   "words_2plus": 927
+  },
+  {
+   "id": "mit-import-export-licenses-system-114-2004",
+   "pages": 4,
+   "passages": 29,
+   "words": 1339,
+   "words_2plus": 1299
+  },
+  {
+   "id": "moa-agriculture-law-13-2015",
+   "pages": 33,
+   "passages": 131,
+   "words": 12876,
+   "words_2plus": 12174
+  },
+  {
+   "id": "trc-technical-standards-specifications",
+   "pages": 151,
+   "passages": 328,
+   "words": 84826,
+   "words_2plus": 40977
+  },
+  {
+   "id": "trc-type-approval-annexes-2-2025",
+   "pages": 9,
+   "passages": 3,
+   "words": 1277,
+   "words_2plus": 1196
+  },
+  {
+   "id": "trc-type-approval-instructions-2-2025",
+   "pages": 12,
+   "passages": 39,
+   "words": 4061,
+   "words_2plus": 3802
+  },
+  {
+   "id": "ustr-jordan-fta-rules-of-origin",
+   "pages": 5,
+   "passages": 15,
+   "words": 2027,
+   "words_2plus": 1968
+  }
+ ],
+ "searches": [
+  {
+   "step": "rules",
+   "q": "ما هي الأجهزة التي تحتاج إلى موافقة نوعية من هيئة تنظيم قطاع الاتصالات؟",
+   "median_ms": 139,
+   "min_ms": 129,
+   "max_ms": 190,
+   "items": 12,
+   "top": [
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "6",
+     "pages": [
+      4,
+      4
+     ],
+     "snippet": "أ­ تعتب ر الموافق ة النوعي ة، الممنوح ة م ن قب ل الهيئ ة، موافق ة للإدخ ال\nلأجهزة الاتصالات التالية:\n١­ أجهزة الاتصالات السلكية.\n٢­ الأجهزة الراديوية ذات قدرة ا"
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "5",
+     "pages": [
+      2,
+      3
+     ],
+     "snippet": "أ يُقدم طلب الحصول على الموافقة النوعية لجهاز الاتصالات إلى الهيئة؛» وفق النموذج\nالمعتمد ورقيًا أو إلكترونيًا.\nب- ترفق بطلب الحصول على الموافقة النوعية الوثائق "
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "18",
+     "pages": [
+      10,
+      11
+     ],
+     "snippet": "- تعتبر الموافقة النوعية الصادرة عن الهيئة جزءًا لا يتجزأ من رخص الترددات\nالممنوحة من الهيئة من حيث الشروط والأحكام؛ ويتم الإشارة لها في الموافقة النوعية.\nب- يج"
+    }
+   ]
+  },
+  {
+   "step": "rules",
+   "q": "Does a smartphone need type approval before it can be imported into Jordan?",
+   "median_ms": 127,
+   "min_ms": 118,
+   "max_ms": 151,
+   "items": 11,
+   "top": [
+    {
+     "doc": "ustr-jordan-fta-rules-of-origin",
+     "article": null,
+     "pages": [
+      1,
+      1
+     ],
+     "snippet": "1 For the purposes of this Agreement, the processing of goods imported under\nHarmonized Commodity Description and Coding System (HS) subheading 0805 into goods\n"
+    },
+    {
+     "doc": "ustr-jordan-fta-rules-of-origin",
+     "article": "10",
+     "pages": [
+      4,
+      5
+     ],
+     "snippet": "Whenever an importer enters an article as eligible for the preferential treatment\nprovided by this Agreement –\n(a)\nthe importer shall be deemed to certify that "
+    },
+    {
+     "doc": "ustr-jordan-fta-rules-of-origin",
+     "article": "4",
+     "pages": [
+      1,
+      1
+     ],
+     "snippet": "For the purposes of this Agreement, “country of origin” requires that an article or\nmaterial, not wholly the growth, product, or manufacture of a Party, be subs"
+    }
+   ]
+  },
+  {
+   "step": "evidence",
+   "q": "ما هي الوثائق المطلوبة لطلب الموافقة النوعية؟",
+   "median_ms": 123,
+   "min_ms": 120,
+   "max_ms": 126,
+   "items": 12,
+   "top": [
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "5",
+     "pages": [
+      2,
+      3
+     ],
+     "snippet": "أ يُقدم طلب الحصول على الموافقة النوعية لجهاز الاتصالات إلى الهيئة؛» وفق النموذج\nالمعتمد ورقيًا أو إلكترونيًا.\nب- ترفق بطلب الحصول على الموافقة النوعية الوثائق "
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "18",
+     "pages": [
+      11,
+      12
+     ],
+     "snippet": "س- تتحمل الجهة مقدمة الطلب للحصول على الموافقة النوعية أو موافقة الإدخال جميع\nالتكاليف المالية المترتبة على تزويد واسترداد العينات من وإلى الهيئة وفقا للآلية\nال"
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "13",
+     "pages": [
+      7,
+      8
+     ],
+     "snippet": "أ- تتم إجراءات اعتماد الشركات والمؤسسات المحلية الراغبة بالحصول على الموافقات\nالنوعية بالنيابة عن جهات أخرى, على النحو الآتي:\n١ يُقدم طلب الاعتماد وفق النموذج ا"
+    }
+   ]
+  },
+  {
+   "step": "evidence",
+   "q": "Is a test report from an accredited laboratory required for type approval?",
+   "median_ms": 141,
+   "min_ms": 130,
+   "max_ms": 152,
+   "items": 12,
+   "top": [
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "5",
+     "pages": [
+      2,
+      3
+     ],
+     "snippet": "أ يُقدم طلب الحصول على الموافقة النوعية لجهاز الاتصالات إلى الهيئة؛» وفق النموذج\nالمعتمد ورقيًا أو إلكترونيًا.\nب- ترفق بطلب الحصول على الموافقة النوعية الوثائق "
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "18",
+     "pages": [
+      10,
+      11
+     ],
+     "snippet": "- تعتبر الموافقة النوعية الصادرة عن الهيئة جزءًا لا يتجزأ من رخص الترددات\nالممنوحة من الهيئة من حيث الشروط والأحكام؛ ويتم الإشارة لها في الموافقة النوعية.\nب- يج"
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "13",
+     "pages": [
+      7,
+      8
+     ],
+     "snippet": "أ- تتم إجراءات اعتماد الشركات والمؤسسات المحلية الراغبة بالحصول على الموافقات\nالنوعية بالنيابة عن جهات أخرى, على النحو الآتي:\n١ يُقدم طلب الاعتماد وفق النموذج ا"
+    }
+   ]
+  },
+  {
+   "step": "evidence",
+   "q": "ما هي المواصفات الفنية لأجهزة الهاتف الخلوي LTE؟",
+   "median_ms": 133,
+   "min_ms": 127,
+   "max_ms": 151,
+   "items": 8,
+   "top": [
+    {
+     "doc": "trc-technical-standards-specifications",
+     "article": null,
+     "pages": [
+      32,
+      32
+     ],
+     "snippet": "|  | RF |  |  | EN 301 |  |  | 5 GHz Broadband |  |  | Smartphone, |  |  | Cellular |  |  | 5 GHz RLAN; Harmonized |  |\n| --- | --- | --- | --- | --- | --- | --"
+    },
+    {
+     "doc": "trc-technical-standards-specifications",
+     "article": null,
+     "pages": [
+      32,
+      34
+     ],
+     "snippet": "essential requirements of article 3.2 of Directive 2014/53/EU RF EN 301 893 5 GHz Broadband Tx/Rx AP AP and Enablers 5 GHz RLAN; Harmonized Standard covering th"
+    },
+    {
+     "doc": "trc-technical-standards-specifications",
+     "article": null,
+     "pages": [
+      9,
+      9
+     ],
+     "snippet": "|  | RF |  |  | EN 300 |  |  | 2.4 GHz Broadband |  |  | Smartphones |  |  | Cellular |  |  | Wideband transmission systems; |  |\n| --- | --- | --- | --- | --- "
+    }
+   ]
+  },
+  {
+   "step": "evidence",
+   "q": "ما هي متطلبات الملصق على الجهاز الحاصل على الموافقة النوعية؟",
+   "median_ms": 135,
+   "min_ms": 133,
+   "max_ms": 145,
+   "items": 12,
+   "top": [
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "5",
+     "pages": [
+      2,
+      3
+     ],
+     "snippet": "أ يُقدم طلب الحصول على الموافقة النوعية لجهاز الاتصالات إلى الهيئة؛» وفق النموذج\nالمعتمد ورقيًا أو إلكترونيًا.\nب- ترفق بطلب الحصول على الموافقة النوعية الوثائق "
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "5",
+     "pages": [
+      3,
+      4
+     ],
+     "snippet": "ح- إجراء أي تعديل على الموافقة النوعية الصادرة عن الهينة لاا يؤثر\nا على ف ةق صلاهيتها, 0 ا\n4480\nط­ يعتب ر طل ب الحص ول عل ى الموافق ة النوعي ة ُملغ ى، ف ي ح ال "
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "18",
+     "pages": [
+      10,
+      11
+     ],
+     "snippet": "- تعتبر الموافقة النوعية الصادرة عن الهيئة جزءًا لا يتجزأ من رخص الترددات\nالممنوحة من الهيئة من حيث الشروط والأحكام؛ ويتم الإشارة لها في الموافقة النوعية.\nب- يج"
+    }
+   ]
+  },
+  {
+   "step": "gaps",
+   "q": "هل الفأرة اللاسلكية معفاة من الموافقة النوعية؟",
+   "median_ms": 142,
+   "min_ms": 132,
+   "max_ms": 157,
+   "items": 12,
+   "top": [
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "18",
+     "pages": [
+      10,
+      11
+     ],
+     "snippet": "- تعتبر الموافقة النوعية الصادرة عن الهيئة جزءًا لا يتجزأ من رخص الترددات\nالممنوحة من الهيئة من حيث الشروط والأحكام؛ ويتم الإشارة لها في الموافقة النوعية.\nب- يج"
+    },
+    {
+     "doc": "trc-type-approval-annexes-2-2025",
+     "article": null,
+     "pages": [
+      6,
+      9
+     ],
+     "snippet": "الإريظة ١ ع ا عد الالاس ماوع ...طم\nثانياً: يتم دراسة طلبات منح الموافقات النوعية للأجهزة المحددة أدناه بالاعتماد على التحقق من تلبيتها للمواصفات الفنية الأساسية"
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "18",
+     "pages": [
+      11,
+      12
+     ],
+     "snippet": "س- تتحمل الجهة مقدمة الطلب للحصول على الموافقة النوعية أو موافقة الإدخال جميع\nالتكاليف المالية المترتبة على تزويد واسترداد العينات من وإلى الهيئة وفقا للآلية\nال"
+    }
+   ]
+  },
+  {
+   "step": "gaps",
+   "q": "What happens if the model in the test report differs from the declared model?",
+   "median_ms": 148,
+   "min_ms": 140,
+   "max_ms": 152,
+   "items": 9,
+   "top": [
+    {
+     "doc": "moa-agriculture-law-13-2015",
+     "article": "20",
+     "pages": [
+      13,
+      13
+     ],
+     "snippet": "٥. يعاقب كل من انتج مخصبات او منظمات نمو نبات تخالف خصائصها القواعد الفنية المعتمدة\nفي قرار تسجيلها او جهزها او اتجر بها او باعها او عرضها للبيع او اعلن عنها او"
+    },
+    {
+     "doc": "trc-technical-standards-specifications",
+     "article": null,
+     "pages": [
+      100,
+      100
+     ],
+     "snippet": "|  | EMC |  |  | EN |  |  | Basic Test Method |  |  | Desktop |  |  | Computer |  |  | Testing and measurement |  |\n| --- | --- | --- | --- | --- | --- | --- | "
+    },
+    {
+     "doc": "trc-technical-standards-specifications",
+     "article": null,
+     "pages": [
+      99,
+      99
+     ],
+     "snippet": "|  | EMC |  |  | EN |  |  | Electrostatic |  |  | Desktop |  |  | Computer |  |  | Testing and measurement |  |\n| --- | --- | --- | --- | --- | --- | --- | --- "
+    }
+   ]
+  },
+  {
+   "step": "form",
+   "q": "ما هي رسوم الموافقة النوعية لأجهزة الاتصالات؟",
+   "median_ms": 124,
+   "min_ms": 119,
+   "max_ms": 138,
+   "items": 12,
+   "top": [
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "18",
+     "pages": [
+      11,
+      12
+     ],
+     "snippet": "س- تتحمل الجهة مقدمة الطلب للحصول على الموافقة النوعية أو موافقة الإدخال جميع\nالتكاليف المالية المترتبة على تزويد واسترداد العينات من وإلى الهيئة وفقا للآلية\nال"
+    },
+    {
+     "doc": "trc-type-approval-annexes-2-2025",
+     "article": null,
+     "pages": [
+      1,
+      5
+     ],
+     "snippet": "الملحق رقم :)١( نموذج طلب الحصول على الموافقة النوعية لأجهزة الاتصالات و/أو إدخالها الى المملكة [] الحصول على الموافقة النوعية: !| موافقة جديدة [] تجديد لا تعدي"
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "5",
+     "pages": [
+      2,
+      3
+     ],
+     "snippet": "أ يُقدم طلب الحصول على الموافقة النوعية لجهاز الاتصالات إلى الهيئة؛» وفق النموذج\nالمعتمد ورقيًا أو إلكترونيًا.\nب- ترفق بطلب الحصول على الموافقة النوعية الوثائق "
+    }
+   ]
+  },
+  {
+   "step": "form",
+   "q": "ما هي البيانات المطلوبة في نموذج طلب الموافقة النوعية؟",
+   "median_ms": 121,
+   "min_ms": 119,
+   "max_ms": 134,
+   "items": 12,
+   "top": [
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "5",
+     "pages": [
+      2,
+      3
+     ],
+     "snippet": "أ يُقدم طلب الحصول على الموافقة النوعية لجهاز الاتصالات إلى الهيئة؛» وفق النموذج\nالمعتمد ورقيًا أو إلكترونيًا.\nب- ترفق بطلب الحصول على الموافقة النوعية الوثائق "
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "5",
+     "pages": [
+      3,
+      4
+     ],
+     "snippet": "ح- إجراء أي تعديل على الموافقة النوعية الصادرة عن الهينة لاا يؤثر\nا على ف ةق صلاهيتها, 0 ا\n4480\nط­ يعتب ر طل ب الحص ول عل ى الموافق ة النوعي ة ُملغ ى، ف ي ح ال "
+    },
+    {
+     "doc": "trc-type-approval-instructions-2-2025",
+     "article": "18",
+     "pages": [
+      11,
+      12
+     ],
+     "snippet": "س- تتحمل الجهة مقدمة الطلب للحصول على الموافقة النوعية أو موافقة الإدخال جميع\nالتكاليف المالية المترتبة على تزويد واسترداد العينات من وإلى الهيئة وفقا للآلية\nال"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1138 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MUTABIQ Time Race</title>
+<meta name="description" content="One TRC type-approval file for a smartphone, done by hand and with MUTABIQ: measured search times, real document sizes and adjustable assumptions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a navy scoreboard band (the deck's hero), then one measured race track drawn to scale,
+   then the ledger of steps, the assumption controls, the year view and the measurement record. */
+:root {
+  --bg: #f4f7f6;
+  --surface: #ffffff;
+  --surface-2: #f9fbfa;
+  --line: #d9e1e6;
+  --ink: #14324f;
+  --muted: #5b6b7b;
+  --band: #0b2440;
+  --band-2: #14324f;
+  --band-3: #1d3f60;
+  --on-band: #e6eef5;
+  --on-band-muted: #a9bccb;
+  --teal: #17b8a6;
+  --teal-ink: #0b7a6e;
+  --teal-tint: #e8f4f2;
+  --gold: #e3b04b;
+  --gold-ink: #7a5410;
+  --gold-tint: #fbf1db;
+  --slate-ink: #3f5367;
+  --slate-tint: #e7ebee;
+  --warn-ink: #9a3420;
+  --warn-tint: #f9ddd6;
+  --m1: #c3ccd5; --m2: #a9b5c1; --m3: #8f9dac; --m4: #758597;
+  --t1: #a6e3da; --t2: #72d1c4; --t3: #3fbfae; --t4: #179f8e;
+  --shadow: 0 1px 2px rgb(11 36 64 / 0.05), 0 8px 24px rgb(11 36 64 / 0.06);
+  /* illustration */
+  --skin: #d9a27c; --hair: #2e2521; --paper: #ffffff; --paper-line: #c5d0da; --desk: #d6c2a1; --desk-leg: #b9a27f;
+  --device: #22384f; --screen: #f7faf9; --scene-wall: #eef3f2;
+
+  --sans: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --arabic: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+  --measure: 72rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --radius: 14px;
+  --step-0: clamp(0.97rem, 0.94rem + 0.15vw, 1.03rem);
+  --step-1: clamp(1.1rem, 1.04rem + 0.3vw, 1.3rem);
+  --step-2: clamp(1.35rem, 1.2rem + 0.7vw, 1.8rem);
+  --step-3: clamp(1.9rem, 1.4rem + 2.2vw, 3.1rem);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #07172a; --surface: #0e233a; --surface-2: #112a44; --line: #21405f; --ink: #e3ebf2; --muted: #9db0c2;
+    --band: #04101f; --band-2: #0c2036; --band-3: #183552; --on-band: #e6eef5; --on-band-muted: #9fb3c5;
+    --teal: #2cc9b6; --teal-ink: #5fd8c8; --teal-tint: #0d3537; --gold: #e8b95a; --gold-ink: #f0c977; --gold-tint: #3a2e14;
+    --slate-ink: #c3d0dc; --slate-tint: #1b3148; --warn-ink: #f4a48f; --warn-tint: #43211a;
+    --m1: #2b4259; --m2: #35506b; --m3: #405e7c; --m4: #4b6c8e;
+    --t1: #0f5c55; --t2: #137067; --t3: #18867b; --t4: #1fa292;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.25);
+    --skin: #c98f6a; --hair: #1a1412; --paper: #e4ebf1; --paper-line: #8fa1b2; --desk: #4a3d2c; --desk-leg: #3a3022;
+    --device: #34506c; --screen: #0a1b2e; --scene-wall: #0b2036;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #07172a; --surface: #0e233a; --surface-2: #112a44; --line: #21405f; --ink: #e3ebf2; --muted: #9db0c2;
+  --band: #04101f; --band-2: #0c2036; --band-3: #183552; --on-band: #e6eef5; --on-band-muted: #9fb3c5;
+  --teal: #2cc9b6; --teal-ink: #5fd8c8; --teal-tint: #0d3537; --gold: #e8b95a; --gold-ink: #f0c977; --gold-tint: #3a2e14;
+  --slate-ink: #c3d0dc; --slate-tint: #1b3148; --warn-ink: #f4a48f; --warn-tint: #43211a;
+  --m1: #2b4259; --m2: #35506b; --m3: #405e7c; --m4: #4b6c8e;
+  --t1: #0f5c55; --t2: #137067; --t3: #18867b; --t4: #1fa292;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.25);
+  --skin: #c98f6a; --hair: #1a1412; --paper: #e4ebf1; --paper-line: #8fa1b2; --desk: #4a3d2c; --desk-leg: #3a3022;
+  --device: #34506c; --screen: #0a1b2e; --scene-wall: #0b2036;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 var(--step-0)/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -0.015em; text-wrap: balance; }
+h2 { font-size: var(--step-2); font-weight: 700; }
+h3 { font-size: var(--step-1); font-weight: 600; letter-spacing: -0.005em; }
+p { margin: 0; }
+a { color: var(--teal-ink); text-underline-offset: 0.2em; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 6px; }
+[lang="ar"] { font-family: var(--arabic); }
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--mono); }
+.wrap { width: min(100%, var(--measure)); margin-inline: auto; padding-inline: var(--gutter); }
+.eyebrow { font: 600 0.78rem/1.3 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-ink); }
+.lede { color: var(--muted); max-width: 64ch; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------------------------------------------------------------- hero band */
+.band { background: var(--band); color: var(--on-band); padding-block: 1.1rem 7.5rem; }
+.band .eyebrow { color: var(--teal); }
+.brand-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: clamp(2rem, 5vw, 3.5rem); }
+.brand { display: inline-flex; align-items: center; gap: 0.7rem; }
+.brand svg { width: 2.1rem; height: 2.1rem; flex: none; }
+.mark-tile { fill: var(--band-2); }
+.mark-dot { fill: var(--gold); }
+.mark-bar { fill: var(--on-band); }
+.mark-check { fill: none; stroke: var(--teal); stroke-width: 4.5; stroke-linecap: round; }
+.wordmark { font: 700 1.3rem/1 var(--arabic); }
+.wordmark-sub { font: 500 1rem/1 var(--sans); letter-spacing: 0.08em; color: var(--teal); padding-inline-start: 0.7rem; border-inline-start: 1px solid var(--band-3); }
+.team { font-size: 0.85rem; color: var(--on-band-muted); }
+.hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: end; }
+.hero h1 { font-size: var(--step-3); font-weight: 700; color: #fff; margin-block: 0.6rem 1rem; }
+.hero h1 em { font-style: normal; color: var(--gold); }
+.hero .lede { color: var(--on-band-muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-top: 1.4rem; font-size: 0.85rem; color: var(--on-band-muted); }
+.legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+
+/* tags: measured / fact / assumption */
+.tag { display: inline-flex; align-items: center; gap: 0.3rem; font: 600 0.68rem/1 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; padding: 0.28rem 0.5rem; border-radius: 999px; white-space: nowrap; border: 1px solid transparent; }
+.tag::before { content: ''; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
+.tag-measured { background: var(--teal-tint); color: var(--teal-ink); border-color: color-mix(in srgb, var(--teal) 45%, transparent); }
+.tag-fact { background: var(--slate-tint); color: var(--slate-ink); border-color: color-mix(in srgb, var(--slate-ink) 30%, transparent); }
+.tag-assumption { background: var(--gold-tint); color: var(--gold-ink); border: 1px dashed color-mix(in srgb, var(--gold) 80%, transparent); }
+.tag-assumption::before { background: transparent; border: 1.5px solid currentColor; }
+.tag-off { background: var(--warn-tint); color: var(--warn-ink); }
+.tag-off::before { display: none; }
+.band .tag-measured { background: rgb(23 184 166 / 0.14); color: var(--teal); }
+.band .tag-fact { background: rgb(230 238 245 / 0.1); color: var(--on-band); }
+.band .tag-assumption { background: rgb(227 176 75 / 0.12); color: var(--gold); }
+
+/* scoreboard */
+.board { background: var(--band-2); border: 1px solid var(--band-3); border-radius: var(--radius); padding: 1.1rem; display: grid; gap: 0.9rem; }
+.clock-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.clock { background: var(--band); border: 1px solid var(--band-3); border-radius: 10px; padding: 0.85rem 0.9rem; min-width: 0; }
+.clock-label { font-size: 0.8rem; color: var(--on-band-muted); display: flex; align-items: center; gap: 0.45rem; }
+.clock-label i { width: 0.6rem; height: 0.6rem; border-radius: 2px; display: inline-block; }
+.clock-time { font: 500 clamp(1.45rem, 1.1rem + 1.6vw, 2.2rem)/1.1 var(--mono); color: #fff; margin-top: 0.35rem; font-variant-numeric: tabular-nums; }
+.clock-note { font-size: 0.78rem; color: var(--on-band-muted); margin-top: 0.25rem; min-height: 1.2em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.clock.done { border-color: var(--teal); }
+.clock.done .clock-note { color: var(--teal); }
+.saved { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; padding: 0.2rem 0.2rem 0; }
+.saved-figure { font: 700 var(--step-2)/1.1 var(--sans); color: var(--gold); font-variant-numeric: tabular-nums; }
+.saved-label { font-size: 0.85rem; color: var(--on-band-muted); }
+.board-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.button { display: inline-flex; align-items: center; gap: 0.5rem; font: 600 0.92rem/1 var(--sans); padding: 0.75rem 1.1rem; border-radius: 9px; border: 1px solid transparent; cursor: pointer; transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease); }
+.button-primary { background: var(--teal); color: #062a26; }
+.button-primary:hover { background: #3fd0bf; }
+.button-ghost { background: transparent; color: var(--on-band); border-color: var(--band-3); }
+.button-ghost:hover { border-color: var(--teal); color: var(--teal); }
+.button-quiet { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.button-quiet:hover { border-color: var(--teal); color: var(--teal-ink); }
+.button svg { width: 1rem; height: 1rem; }
+
+/* ---------------------------------------------------------------- race card */
+main { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(2.5rem, 6vw, 4.5rem); padding-bottom: 4rem; }
+main > *, .hero > *, .section-head, .ledger, .controls, .year > * { min-width: 0; }
+.race-card { margin-top: -6rem; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: clamp(1rem, 3vw, 2rem); }
+.race-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem 1rem; flex-wrap: wrap; margin-bottom: 1.3rem; }
+.race-head p { color: var(--muted); font-size: 0.9rem; }
+.race { position: relative; display: grid; gap: 1.4rem; }
+.lane-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.45rem; }
+.lane-name { font-weight: 600; }
+.lane-time { font: 500 1rem/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); }
+.track { position: relative; height: 3.1rem; border-radius: 10px; background: repeating-linear-gradient(90deg, var(--surface-2) 0 calc(var(--hour) - 1px), var(--line) calc(var(--hour) - 1px) var(--hour)); border: 1px solid var(--line); overflow: hidden; }
+.segs { position: absolute; inset: 0; display: flex; }
+.seg { height: 100%; position: relative; display: flex; align-items: center; justify-content: center; font: 600 0.78rem/1 var(--sans); color: var(--ink); overflow: hidden; white-space: nowrap; border-inline-end: 2px solid var(--surface); }
+.seg:last-child { border-inline-end: 0; }
+.lane-manual .seg:nth-child(1) { background: var(--m1); } .lane-manual .seg:nth-child(2) { background: var(--m2); }
+.lane-manual .seg:nth-child(3) { background: var(--m3); } .lane-manual .seg:nth-child(4) { background: var(--m4); }
+.lane-mutabiq .seg:nth-child(1) { background: var(--t1); } .lane-mutabiq .seg:nth-child(2) { background: var(--t2); }
+.lane-mutabiq .seg:nth-child(3) { background: var(--t3); } .lane-mutabiq .seg:nth-child(4) { background: var(--t4); }
+.lane-manual .seg:nth-child(4), .lane-mutabiq .seg:nth-child(4) { color: #fff; }
+.seg.hide-label span { visibility: hidden; }
+.veil { position: absolute; top: 0; bottom: 0; right: 0; background: var(--surface-2); opacity: 0.88; pointer-events: none; }
+.lane-foot { display: flex; justify-content: space-between; gap: 1rem; margin-top: 0.4rem; font-size: 0.8rem; color: var(--muted); }
+.flag { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--teal-ink); font-weight: 600; }
+.flag[hidden] { display: none; }
+.axis { position: relative; height: 1.2rem; font: 400 0.72rem/1 var(--mono); color: var(--muted); margin-top: -0.6rem; }
+.axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.axis span:first-child { transform: none; }
+.playhead { position: absolute; top: 0; bottom: 1.2rem; width: 2px; background: var(--gold); pointer-events: none; transform: translateX(-1px); opacity: 0; transition: opacity 0.3s; }
+.race.running .playhead { opacity: 1; }
+.playhead::before { content: ''; position: absolute; top: -5px; left: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); }
+.step-key { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-top: 1.3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.85rem; color: var(--muted); }
+.step-key b { color: var(--ink); font-weight: 600; margin-inline-end: 0.3rem; font-family: var(--mono); }
+.callout { margin-top: 0.4rem; font-size: 0.82rem; color: var(--muted); }
+
+/* ---------------------------------------------------------------- ledger */
+.section-head { display: grid; gap: 0.5rem; margin-bottom: 1.4rem; }
+.ledger { display: grid; gap: 0.9rem; }
+.ledger-row { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1fr); gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.ledger-q { padding: 1.1rem 1.2rem; background: var(--surface-2); border-inline-end: 1px solid var(--line); display: grid; align-content: start; gap: 0.35rem; }
+.ledger-q .qn { font: 500 0.8rem/1 var(--mono); color: var(--muted); }
+.ledger-q h3 { font-size: 1.05rem; }
+.ledger-cell { padding: 1.1rem 1.2rem; display: grid; align-content: start; gap: 0.75rem; min-width: 0; }
+.ledger-cell + .ledger-cell { border-inline-start: 1px solid var(--line); }
+.cell-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+.cell-who { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.cell-total { font: 500 1.15rem/1 var(--mono); font-variant-numeric: tabular-nums; }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.items li { display: grid; gap: 0.3rem; font-size: 0.9rem; }
+.item-line { display: flex; justify-content: space-between; gap: 0.75rem; }
+.item-line .t { font: 500 0.88rem/1.4 var(--mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.formula { font: 400 0.8rem/1.4 var(--mono); color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.ledger-head { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1fr); padding-inline: 1.2rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ledger-head span:not(:first-child) { padding-inline-start: 1.2rem; }
+
+/* ---------------------------------------------------------------- assumptions */
+.controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem; display: grid; align-content: start; gap: 1.1rem; min-width: 0; }
+.panel h3 { display: flex; align-items: center; gap: 0.5rem; font-size: 1rem; }
+.panel h3 i { width: 0.7rem; height: 0.7rem; border-radius: 3px; display: inline-block; }
+.field { display: grid; gap: 0.35rem; }
+.field-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
+.field label { font-size: 0.88rem; font-weight: 500; }
+.field output { font: 500 0.88rem/1 var(--mono); color: var(--gold-ink); background: var(--gold-tint); padding: 0.25rem 0.45rem; border-radius: 6px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.field small { color: var(--muted); font-size: 0.78rem; line-height: 1.45; }
+input[type="range"] { width: 100%; accent-color: var(--gold); margin: 0.15rem 0; }
+.controls-foot { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; font-size: 0.85rem; color: var(--muted); }
+
+/* ---------------------------------------------------------------- year */
+.year { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 1rem; align-items: stretch; }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; display: grid; gap: 0.3rem; align-content: start; }
+.tile .k { font-size: 0.8rem; color: var(--muted); }
+.tile .v { font: 600 var(--step-2)/1.1 var(--sans); font-variant-numeric: tabular-nums; }
+.tile.hero-tile { grid-column: 1 / -1; background: var(--band); border-color: var(--band); }
+.tile.hero-tile .k { color: var(--on-band-muted); }
+.tile.hero-tile .v { color: var(--gold); font-size: var(--step-3); }
+.bars { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem; display: grid; gap: 1rem; align-content: start; }
+.bar-row { display: grid; gap: 0.35rem; }
+.bar-top { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.88rem; }
+.bar-top .mono { font-variant-numeric: tabular-nums; }
+.bar { height: 1.6rem; border-radius: 7px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
+.bar > div { height: 100%; border-radius: 6px 0 0 6px; transition: width 0.5s var(--ease); }
+.bar-manual > div { background: var(--m3); }
+.bar-mutabiq > div { background: var(--t3); }
+.year-formula { font: 400 0.8rem/1.5 var(--mono); color: var(--muted); border-top: 1px solid var(--line); padding-top: 0.9rem; }
+
+/* ---------------------------------------------------------------- measured */
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; margin-bottom: 1.2rem; }
+.fact { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 0.95rem 1rem; display: grid; gap: 0.35rem; align-content: start; }
+.fact .v { font: 600 1.5rem/1.1 var(--sans); font-variant-numeric: tabular-nums; }
+.fact .k { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+th, td { text-align: start; padding: 0.75rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--surface-2); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.n, th.n { text-align: end; font-variant-numeric: tabular-nums; font-family: var(--mono); white-space: nowrap; }
+.q-ar { font-family: var(--arabic); font-size: 0.98rem; display: block; }
+.q-gloss { color: var(--muted); font-size: 0.8rem; display: block; margin-top: 0.15rem; }
+.hits { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.2rem; min-width: 15rem; }
+.hits li { font-size: 0.82rem; color: var(--muted); }
+.hits li:first-child { color: var(--ink); font-weight: 500; }
+.step-pill { display: inline-block; font: 500 0.75rem/1 var(--mono); padding: 0.3rem 0.45rem; border-radius: 6px; background: var(--slate-tint); color: var(--slate-ink); white-space: nowrap; }
+tfoot td { font-weight: 600; background: var(--surface-2); }
+.subhead { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin: 2rem 0 0.8rem; }
+.subhead p { color: var(--muted); font-size: 0.88rem; }
+.note { margin-top: 0.8rem; font-size: 0.85rem; color: var(--muted); max-width: 80ch; }
+
+/* ---------------------------------------------------------------- method */
+.method { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+.method .panel ul, .method .panel ol { margin: 0; padding-inline-start: 1.15rem; display: grid; gap: 0.55rem; font-size: 0.92rem; }
+.method .panel li::marker { color: var(--teal-ink); }
+
+footer { background: var(--band); color: var(--on-band-muted); padding-block: 2.2rem; font-size: 0.85rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 1rem 2rem; flex-wrap: wrap; align-items: center; }
+footer strong { color: var(--on-band); font-weight: 600; }
+footer .ar { font-family: var(--arabic); color: var(--gold); font-size: 1rem; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .controls { grid-template-columns: 1fr; }
+  .year { grid-template-columns: 1fr; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .method { grid-template-columns: 1fr; }
+  .ledger-head { display: none; }
+  .ledger-row { grid-template-columns: 1fr; }
+  .ledger-q { border-inline-end: 0; border-bottom: 1px solid var(--line); }
+  .ledger-cell + .ledger-cell { border-inline-start: 0; border-top: 1px solid var(--line); }
+}
+/* ---------------------------------------------------------------- the two people */
+.scenes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.6rem; }
+.scene { margin: 0; background: var(--scene-wall); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: grid; min-width: 0; }
+.scene svg { display: block; width: 100%; height: auto; }
+.scene figcaption { display: grid; gap: 0.15rem; padding: 0.75rem 1rem 0.9rem; background: var(--surface); border-top: 1px solid var(--line); }
+.scene .who { display: flex; justify-content: space-between; gap: 0.5rem; font-weight: 600; font-size: 0.92rem; }
+.scene .who .mono { font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.scene .doing { font-size: 0.84rem; color: var(--muted); min-height: 2.6em; }
+.scene[data-step="4"] .doing { color: var(--teal-ink); font-weight: 600; }
+
+.art .wall-line { stroke: var(--line); stroke-width: 2; }
+.art .clock-face { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.art .hand { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; transform-box: fill-box; transform-origin: 50% 100%; }
+.art .pin { fill: var(--gold); }
+.art .skin { fill: var(--skin); }
+.art .hair { fill: var(--hair); }
+.art .shirt-m { fill: var(--m4); }
+.art .shirt-t { fill: var(--t4); }
+.art .arm-m { fill: none; stroke: var(--m4); stroke-width: 11; stroke-linecap: round; }
+.art .arm-t { fill: none; stroke: var(--t4); stroke-width: 11; stroke-linecap: round; }
+.art .desk { fill: var(--desk); }
+.art .desk-leg { fill: var(--desk-leg); }
+.art .paper { fill: var(--paper); stroke: var(--paper-line); stroke-width: 1.2; }
+.art .pline { stroke: var(--paper-line); stroke-width: 2; stroke-linecap: round; }
+.art .device { fill: var(--device); }
+.art .screen { fill: var(--screen); }
+.art .teal { fill: var(--teal); }
+.art .teal-s { stroke: var(--teal); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.art .gold { fill: var(--gold); }
+.art .gold-s { stroke: var(--gold); fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.art .ink { fill: var(--ink); }
+.art .ink-s { stroke: var(--ink); fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.art .warn { fill: var(--warn-ink); }
+.art .binder-1 { fill: var(--m2); } .art .binder-2 { fill: var(--m3); } .art .binder-3 { fill: var(--gold); } .art .binder-4 { fill: var(--m4); }
+.art .shelf { fill: var(--desk-leg); }
+.art .sweat { fill: #7fc6f0; opacity: 0; }
+.art .steam { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; opacity: 0.6; }
+.art text { font-family: var(--sans); font-weight: 700; }
+
+/* props appear for the step each person is on (0–3), and 4 when the file is ready */
+.art .prop { opacity: 0; transition: opacity 0.35s var(--ease); }
+.scene[data-step="0"] .s0, .scene[data-step="1"] .s1, .scene[data-step="2"] .s2,
+.scene[data-step="3"] .s3, .scene[data-step="4"] .s4 { opacity: 1; }
+
+/* motion only while the race runs and the person is still working */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes bob { 50% { transform: translateY(2px); } }
+@keyframes flip { 0%, 20% { transform: scaleX(1); } 60%, 100% { transform: scaleX(-1); } }
+@keyframes pen { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(14px, 2px); } 50% { transform: translate(4px, 6px); } 75% { transform: translate(18px, 8px); } }
+@keyframes sweat { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes steam { 0% { opacity: 0; transform: translateY(4px); } 50% { opacity: 0.7; } 100% { opacity: 0; transform: translateY(-8px); } }
+@keyframes scan { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, 4px); } }
+.art .flip, .art .pen, .art .magnifier { transform-box: fill-box; }
+.art .flip { transform-origin: 0% 50%; }
+.scenes.racing .scene:not([data-step="4"]) .hand-m { animation: spin 0.9s linear infinite; }
+.scenes.racing .scene:not([data-step="4"]) .hand-h { animation: spin 10.8s linear infinite; }
+.scenes.racing .scene:not([data-step="4"]) .bob { animation: bob 1.2s ease-in-out infinite; }
+.scenes.racing .scene:not([data-step="4"]) .flip { animation: flip 1.1s ease-in-out infinite; }
+.scenes.racing .scene:not([data-step="4"]) .pen { animation: pen 1.4s ease-in-out infinite; }
+.scenes.racing .scene:not([data-step="4"]) .magnifier { animation: scan 2s ease-in-out infinite; }
+.scenes.racing .scene-manual:not([data-step="0"]):not([data-step="4"]) .sweat { animation: sweat 1.6s ease-in infinite; }
+.scenes.racing .scene:not([data-step="4"]) .cursor { animation: blink 0.8s steps(1) infinite; }
+.scene .rise { opacity: 1; }
+.scenes.racing .scene[data-step="1"] .s1 .rise, .scenes.racing .scene[data-step="2"] .s2 .rise { animation: rise 0.4s var(--ease) both; }
+.rise.r2 { animation-delay: 0.15s !important; } .rise.r3 { animation-delay: 0.3s !important; } .rise.r4 { animation-delay: 0.45s !important; }
+.scene .steam { animation: steam 2.4s ease-out infinite; transform-box: fill-box; }
+.scene .steam.d2 { animation-delay: 1.2s; }
+
+@media (max-width: 640px) { .scenes { grid-template-columns: 1fr; } }
+
+@media (max-width: 480px) {
+  .clock-row { grid-template-columns: 1fr; }
+  .tiles { grid-template-columns: 1fr; }
+  .facts { grid-template-columns: 1fr; }
+  .track { height: 2.6rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="brand-row">
+      <span class="brand">
+        <svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <rect class="mark-tile" width="40" height="40" rx="10"/>
+          <circle class="mark-dot" cx="12" cy="14" r="3"/><rect class="mark-bar" x="18" y="11.5" width="13" height="5" rx="2.5"/>
+          <path class="mark-check" d="M10 21.5Q10 27.5 16 27.5H30"/>
+        </svg>
+        <span class="wordmark" lang="ar">مُطابِق</span><span class="wordmark-sub">MUTABIQ</span>
+      </span>
+      <span class="team">Time race · Team ZAA · AI Quest 2026</span>
+    </div>
+
+    <div class="hero">
+      <div>
+        <p class="eyebrow">TRC type approval · one 5G smartphone</p>
+        <h1>Where do the hours go in <em>one TRC file?</em></h1>
+        <p class="lede">The same four questions, answered by hand and with MUTABIQ. The manual side is built from the real size of the TRC texts plus assumptions you can change. The MUTABIQ side uses search times we measured on our engine, plus the human review that still has to happen.</p>
+        <div class="legend" aria-label="What each label means">
+          <span><span class="tag tag-measured">Measured</span> timed on our engine</span>
+          <span><span class="tag tag-fact">Fact</span> counted from the official texts</span>
+          <span><span class="tag tag-assumption">Assumption</span> yours to change</span>
+        </div>
+      </div>
+
+      <div class="board" aria-live="polite">
+        <div class="clock-row">
+          <div class="clock" id="clock-manual">
+            <div class="clock-label"><i style="background: var(--m3)"></i>By hand</div>
+            <div class="clock-time" id="time-manual">0:00:00</div>
+            <div class="clock-note" id="note-manual"></div>
+          </div>
+          <div class="clock" id="clock-mutabiq">
+            <div class="clock-label"><i style="background: var(--t3)"></i>With MUTABIQ</div>
+            <div class="clock-time" id="time-mutabiq">0:00:00</div>
+            <div class="clock-note" id="note-mutabiq"></div>
+          </div>
+        </div>
+        <div class="saved">
+          <span class="saved-figure num" id="saved-figure">–</span>
+          <span class="saved-label" id="saved-label">back per product file</span>
+        </div>
+        <div class="board-actions">
+          <button class="button button-primary" type="button" id="run">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>
+            <span id="run-label">Run the race</span>
+          </button>
+          <a class="button button-ghost" href="#assumptions">Change the assumptions</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="race-card" aria-labelledby="race-title">
+      <div class="race-head">
+        <h2 id="race-title">The race, drawn to scale</h2>
+        <p id="race-scale">Grid lines are one hour apart.</p>
+      </div>
+      <div class="scenes" id="scenes">
+        <figure class="scene scene-manual" id="scene-manual" data-step="4">
+          <svg class="art" viewBox="0 0 360 220" role="img" aria-labelledby="scene-manual-title">
+            <title id="scene-manual-title">A person preparing the TRC file by hand while printed regulations pile up on the desk</title>
+            <!-- shelf of binders -->
+            <rect x="22" y="72" width="80" height="4" class="shelf"/>
+            <rect x="28" y="36" width="11" height="36" rx="2" class="binder-1"/>
+            <rect x="41" y="40" width="11" height="32" rx="2" class="binder-2"/>
+            <rect x="54" y="32" width="11" height="40" rx="2" class="binder-3"/>
+            <rect x="67" y="38" width="11" height="34" rx="2" class="binder-4"/>
+            <rect x="82" y="42" width="12" height="30" rx="2" class="binder-1" transform="rotate(14 88 57)"/>
+            <!-- wall clock -->
+            <g transform="translate(316 46)">
+              <circle r="20" class="clock-face"/>
+              <g transform="rotate(120)"><line class="hand hand-h" x1="0" y1="0" x2="0" y2="-9"/></g>
+              <line class="hand hand-m" x1="0" y1="0" x2="0" y2="-15"/>
+              <circle r="2.2" class="pin"/>
+            </g>
+            <!-- person -->
+            <g class="bob">
+              <path class="shirt-m" d="M128 170 V138 Q128 110 170 110 Q212 110 212 138 V170 Z"/>
+              <rect x="162" y="96" width="16" height="16" class="skin"/>
+              <circle cx="170" cy="80" r="21" class="skin"/>
+              <path class="hair" d="M149 82 Q146 57 170 57 Q195 57 191 82 Q187 67 170 67 Q155 67 149 82Z"/>
+              <circle cx="163" cy="82" r="1.8" class="ink"/><circle cx="177" cy="82" r="1.8" class="ink"/>
+              <path d="M164 93 Q170 90 176 93" class="ink-s" style="stroke-width:1.8"/>
+              <path class="sweat" d="M194 64 q5 7 0 10 q-5 -3 0 -10z"/>
+              <path class="arm-m" d="M134 126 Q124 156 152 165"/>
+              <path class="arm-m" d="M206 126 Q216 156 188 165"/>
+              <circle cx="154" cy="165" r="6" class="skin"/><circle cx="186" cy="165" r="6" class="skin"/>
+            </g>
+            <!-- desk -->
+            <rect x="12" y="168" width="336" height="12" rx="3" class="desk"/>
+            <rect x="30" y="180" width="9" height="40" class="desk-leg"/><rect x="321" y="180" width="9" height="40" class="desk-leg"/>
+            <!-- the pile of printed regulations grows with every step -->
+            <rect x="32" y="161" width="62" height="7" class="paper prop s1 s2 s3 s4"/>
+            <rect x="35" y="154" width="62" height="7" class="paper prop s1 s2 s3 s4"/>
+            <rect x="31" y="147" width="62" height="7" class="paper prop s2 s3 s4"/>
+            <rect x="34" y="140" width="62" height="7" class="paper prop s2 s3 s4"/>
+            <rect x="32" y="133" width="62" height="7" class="paper prop s2 s3 s4"/>
+            <rect x="36" y="126" width="62" height="7" class="paper prop s3 s4"/>
+            <rect x="33" y="119" width="62" height="7" class="paper prop s3 s4"/>
+            <rect x="35" y="112" width="62" height="7" class="paper prop s4"/>
+            <!-- the phone being approved -->
+            <rect x="328" y="140" width="15" height="28" rx="3" class="device"/><rect x="330" y="143" width="11" height="20" rx="1.5" class="screen"/>
+            <!-- Q1: searching official sites and downloading the PDFs -->
+            <g class="prop s0">
+              <rect x="222" y="100" width="98" height="60" rx="5" class="device"/>
+              <rect x="228" y="106" width="86" height="46" rx="2" class="screen"/>
+              <rect x="234" y="111" width="62" height="8" rx="4" class="paper"/>
+              <circle cx="304" cy="115" r="3.5" class="ink-s" style="stroke-width:1.6"/>
+              <line x1="234" y1="128" x2="284" y2="128" class="pline"/>
+              <line x1="234" y1="136" x2="276" y2="136" class="pline"/>
+              <line x1="234" y1="144" x2="288" y2="144" class="pline"/>
+              <path d="M302 127 v13 m-5 -5 l5 5 l5 -5" class="teal-s"/>
+              <rect x="262" y="160" width="18" height="8" class="device"/>
+            </g>
+            <!-- Q2: reading the Instructions, scanning the standards list -->
+            <g class="prop s1">
+              <path class="paper" d="M122 168 L128 140 L170 144 L170 168Z"/>
+              <path class="paper" d="M218 168 L212 140 L170 144 L170 168Z"/>
+              <line x1="134" y1="151" x2="162" y2="153" class="pline"/><line x1="133" y1="158" x2="162" y2="160" class="pline"/>
+              <line x1="178" y1="153" x2="206" y2="151" class="pline"/><line x1="178" y1="160" x2="207" y2="158" class="pline"/>
+              <path class="paper flip" d="M170 144 L212 140 L218 168 L170 168Z"/>
+              <rect x="240" y="126" width="64" height="42" rx="2" class="paper" transform="rotate(-5 272 147)"/>
+              <line x1="248" y1="138" x2="296" y2="134" class="pline"/><line x1="249" y1="146" x2="290" y2="143" class="pline"/><line x1="250" y1="154" x2="297" y2="150" class="pline"/>
+              <text x="246" y="120" font-size="11" class="ink">151 pages</text>
+              <g class="magnifier"><circle cx="290" cy="144" r="11" class="ink-s"/><line x1="298" y1="152" x2="308" y2="162" class="ink-s" style="stroke-width:4"/></g>
+            </g>
+            <!-- Q3: comparing the DoC and the test report, ticking a checklist -->
+            <g class="prop s2">
+              <rect x="118" y="134" width="46" height="34" rx="2" class="paper"/>
+              <line x1="124" y1="143" x2="156" y2="143" class="pline"/><line x1="124" y1="151" x2="150" y2="151" class="pline"/><line x1="124" y1="159" x2="154" y2="159" class="pline"/>
+              <rect x="176" y="134" width="46" height="34" rx="2" class="paper"/>
+              <line x1="182" y1="143" x2="214" y2="143" class="pline"/><line x1="182" y1="151" x2="208" y2="151" class="pline"/><line x1="182" y1="159" x2="212" y2="159" class="pline"/>
+              <circle cx="170" cy="126" r="9" class="gold"/><text x="170" y="130.5" text-anchor="middle" font-size="12" style="fill:#0b2440">?</text>
+              <rect x="244" y="120" width="60" height="48" rx="2" class="paper"/>
+              <rect x="250" y="127" width="7" height="7" class="paper"/><path d="M251 130 l2.5 2.5 l4 -5" class="teal-s" style="stroke-width:1.8"/><line x1="262" y1="130.5" x2="296" y2="130.5" class="pline"/>
+              <rect x="250" y="139" width="7" height="7" class="paper"/><path d="M251 142 l2.5 2.5 l4 -5" class="teal-s" style="stroke-width:1.8"/><line x1="262" y1="142.5" x2="292" y2="142.5" class="pline"/>
+              <rect x="250" y="151" width="7" height="7" class="paper"/><line x1="262" y1="154.5" x2="296" y2="154.5" class="pline"/>
+              <g class="pen"><path d="M266 128 l-14 22 l-1.5 5 l4 -3 l14 -22z" class="ink"/></g>
+            </g>
+            <!-- Q4: filling the Annex 1 form by hand -->
+            <g class="prop s3">
+              <rect x="128" y="128" width="84" height="40" rx="2" class="paper"/>
+              <rect x="128" y="128" width="84" height="7" class="device"/>
+              <rect x="134" y="140" width="34" height="7" class="paper"/><rect x="172" y="140" width="34" height="7" class="paper"/>
+              <rect x="134" y="151" width="72" height="7" class="paper"/>
+              <line x1="136" y1="143.5" x2="160" y2="143.5" class="pline"/>
+              <g class="pen"><path d="M184 128 l-14 22 l-1.5 5 l4 -3 l14 -22z" class="ink"/></g>
+            </g>
+            <!-- done: the form, stamped ready for review -->
+            <g class="prop s4">
+              <rect x="128" y="128" width="84" height="40" rx="2" class="paper"/>
+              <rect x="128" y="128" width="84" height="7" class="device"/>
+              <line x1="135" y1="144" x2="170" y2="144" class="pline"/><line x1="135" y1="152" x2="160" y2="152" class="pline"/><line x1="135" y1="160" x2="168" y2="160" class="pline"/>
+              <g transform="rotate(-12 192 151)"><rect x="174" y="143" width="38" height="16" rx="3" class="teal-s"/><text x="193" y="155" text-anchor="middle" font-size="9" style="fill:var(--teal)">READY</text></g>
+            </g>
+          </svg>
+          <figcaption>
+            <span class="who"><span>By hand</span><span class="mono" id="scene-time-manual"></span></span>
+            <span class="doing" id="doing-manual"></span>
+          </figcaption>
+        </figure>
+
+        <figure class="scene scene-mutabiq" id="scene-mutabiq" data-step="4">
+          <svg class="art" viewBox="0 0 360 220" role="img" aria-labelledby="scene-mutabiq-title">
+            <title id="scene-mutabiq-title">A person preparing the same file on a laptop with MUTABIQ, then reviewing the findings</title>
+            <!-- window -->
+            <rect x="24" y="26" width="74" height="54" rx="4" class="paper"/>
+            <line x1="61" y1="26" x2="61" y2="80" class="wall-line"/><line x1="24" y1="53" x2="98" y2="53" class="wall-line"/>
+            <!-- wall clock -->
+            <g transform="translate(316 46)">
+              <circle r="20" class="clock-face"/>
+              <g transform="rotate(120)"><line class="hand hand-h" x1="0" y1="0" x2="0" y2="-9"/></g>
+              <line class="hand hand-m" x1="0" y1="0" x2="0" y2="-15"/>
+              <circle r="2.2" class="pin"/>
+            </g>
+            <!-- person -->
+            <g class="bob">
+              <path class="arm-t prop s4" d="M134 126 Q118 92 151 72"/>
+              <path class="arm-t prop s4" d="M206 126 Q222 92 189 72"/>
+              <path class="shirt-t" d="M128 170 V138 Q128 110 170 110 Q212 110 212 138 V170 Z"/>
+              <rect x="162" y="96" width="16" height="16" class="skin"/>
+              <circle cx="170" cy="80" r="21" class="skin"/>
+              <path class="hair" d="M149 80 Q148 57 170 57 Q192 57 191 80 Q184 64 168 66 Q156 68 149 80Z"/>
+              <circle cx="163" cy="82" r="1.8" class="ink"/><circle cx="177" cy="82" r="1.8" class="ink"/>
+              <path d="M164 92 Q170 92 176 92" class="ink-s prop s0 s1 s2 s3" style="stroke-width:1.8"/>
+              <path d="M163 91 Q170 97 177 91" class="ink-s prop s4" style="stroke-width:1.8"/>
+              <path class="arm-t prop s0 s1 s2 s3" d="M134 126 Q124 156 150 164"/>
+              <path class="arm-t prop s0 s1 s2 s3" d="M206 126 Q216 156 190 164"/>
+            </g>
+            <!-- desk -->
+            <rect x="12" y="168" width="336" height="12" rx="3" class="desk"/>
+            <rect x="30" y="180" width="9" height="40" class="desk-leg"/><rect x="321" y="180" width="9" height="40" class="desk-leg"/>
+            <!-- the phone being approved -->
+            <rect x="300" y="140" width="15" height="28" rx="3" class="device"/><rect x="302" y="143" width="11" height="20" rx="1.5" class="screen"/>
+            <!-- laptop -->
+            <rect x="116" y="102" width="108" height="64" rx="5" class="device"/>
+            <rect x="122" y="108" width="96" height="52" rx="2" class="screen"/>
+            <rect x="122" y="108" width="96" height="9" class="teal"/>
+            <path d="M102 166 H238 L232 172 H108Z" class="device"/>
+            <!-- Q1: entering the product -->
+            <g class="prop s0">
+              <line x1="128" y1="127" x2="146" y2="127" class="pline"/><rect x="152" y="123" width="60" height="8" rx="2" class="paper"/>
+              <line x1="128" y1="139" x2="146" y2="139" class="pline"/><rect x="152" y="135" width="60" height="8" rx="2" class="paper"/>
+              <line x1="128" y1="151" x2="146" y2="151" class="pline"/><rect x="152" y="147" width="60" height="8" rx="2" class="paper"/>
+              <line x1="155" y1="127" x2="190" y2="127" class="teal-s" style="stroke-width:2"/>
+              <line x1="155" y1="139" x2="178" y2="139" class="teal-s" style="stroke-width:2"/>
+              <rect x="170" y="147.5" width="1.8" height="7" class="ink cursor"/>
+            </g>
+            <!-- Q2: retrieving the cited provisions -->
+            <g class="prop s1">
+              <rect x="128" y="122" width="84" height="8" rx="4" class="paper"/>
+              <g class="rise r2"><rect x="128" y="135" width="20" height="6" rx="3" class="teal"/><line x1="153" y1="138" x2="208" y2="138" class="pline"/></g>
+              <g class="rise r3"><rect x="128" y="144" width="20" height="6" rx="3" class="teal"/><line x1="153" y1="147" x2="200" y2="147" class="pline"/></g>
+              <g class="rise r4"><rect x="128" y="153" width="20" height="6" rx="3" class="teal"/><line x1="153" y1="156" x2="205" y2="156" class="pline"/></g>
+            </g>
+            <!-- Q3: reviewing findings, each with its article -->
+            <g class="prop s2">
+              <g class="rise"><circle cx="132" cy="125" r="3.6" class="teal"/><line x1="140" y1="125" x2="206" y2="125" class="pline"/></g>
+              <g class="rise r2"><circle cx="132" cy="134" r="3.6" class="teal"/><line x1="140" y1="134" x2="198" y2="134" class="pline"/></g>
+              <g class="rise r3"><circle cx="132" cy="143" r="3.6" class="teal"/><line x1="140" y1="143" x2="204" y2="143" class="pline"/></g>
+              <g class="rise r4"><circle cx="132" cy="152" r="3.6" class="gold"/><line x1="140" y1="152" x2="192" y2="152" class="pline"/></g>
+            </g>
+            <!-- Q4: the pre-filled form -->
+            <g class="prop s3">
+              <line x1="128" y1="125" x2="150" y2="125" class="pline"/><line x1="156" y1="125" x2="206" y2="125" class="teal-s" style="stroke-width:2"/>
+              <line x1="128" y1="134" x2="150" y2="134" class="pline"/><line x1="156" y1="134" x2="196" y2="134" class="teal-s" style="stroke-width:2"/>
+              <line x1="128" y1="143" x2="150" y2="143" class="pline"/><line x1="156" y1="143" x2="202" y2="143" class="teal-s" style="stroke-width:2"/>
+              <text x="170" y="157" text-anchor="middle" font-size="8" style="fill:var(--gold)">DRAFT</text>
+            </g>
+            <!-- done -->
+            <g class="prop s4">
+              <circle cx="170" cy="136" r="13" class="teal"/>
+              <path d="M163.5 136.5 l4.5 4.5 l8.5 -9" fill="none" stroke="#062a26" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="252" y="148" width="18" height="20" rx="3" class="paper"/>
+              <path d="M270 153 q8 0 8 6 q0 6 -8 6" class="ink-s" style="stroke-width:2"/>
+              <path class="steam" d="M257 142 q-4 -6 0 -12"/>
+              <path class="steam d2" d="M265 142 q4 -6 0 -12"/>
+            </g>
+          </svg>
+          <figcaption>
+            <span class="who"><span>With MUTABIQ</span><span class="mono" id="scene-time-mutabiq"></span></span>
+            <span class="doing" id="doing-mutabiq"></span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="race" id="race">
+        <div class="lane lane-manual">
+          <div class="lane-head"><span class="lane-name">By hand</span><span class="lane-time" id="lane-time-manual"></span></div>
+          <div class="track" id="track-manual"><div class="segs"></div><div class="veil"></div></div>
+        </div>
+        <div class="lane lane-mutabiq">
+          <div class="lane-head"><span class="lane-name">With MUTABIQ</span><span class="lane-time" id="lane-time-mutabiq"></span></div>
+          <div class="track" id="track-mutabiq"><div class="segs"></div><div class="veil"></div></div>
+          <div class="lane-foot">
+            <span class="callout" id="search-callout"></span>
+            <span class="flag" id="ready-flag" hidden>
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              File ready for applicant review
+            </span>
+          </div>
+        </div>
+        <div class="axis" id="axis" aria-hidden="true"></div>
+        <div class="playhead" id="playhead" aria-hidden="true"></div>
+      </div>
+      <div class="step-key" id="step-key"></div>
+    </section>
+  </div>
+
+  <section class="wrap" aria-labelledby="ledger-title">
+    <div class="section-head">
+      <p class="eyebrow">Step by step</p>
+      <h2 id="ledger-title">The four questions every importer has to answer</h2>
+      <p class="lede">These are the questions from our deck. Each time is shown with how it was worked out. The 8 requirements are the findings MUTABIQ produces for the DEMO-X1 phone, citing TRC Instructions No. 2 of 2025, its annexes and the standards list.</p>
+    </div>
+    <div class="ledger-head" aria-hidden="true"><span>Question</span><span>By hand</span><span>With MUTABIQ</span></div>
+    <div class="ledger" id="ledger"></div>
+  </section>
+
+  <section class="wrap" id="assumptions" aria-labelledby="assumptions-title">
+    <div class="section-head">
+      <p class="eyebrow">Your numbers</p>
+      <h2 id="assumptions-title">Change the assumptions</h2>
+      <p class="lede">Every slider is an assumption. Set them to what you think is fair, or to what you have timed yourself. The race, the ledger and the year view update straight away.</p>
+    </div>
+    <div class="controls" id="controls"></div>
+    <div class="controls-foot">
+      <span>Defaults are our own estimates. None of them comes from a pilot.</span>
+      <button class="button button-quiet" type="button" id="reset">Reset to defaults</button>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="year-title">
+    <div class="section-head">
+      <p class="eyebrow">Over a year</p>
+      <h2 id="year-title">What it adds up to</h2>
+      <p class="lede">By hand, the first product teaches you the rules. Later products still need the checks and the form, plus part of the reading again. With MUTABIQ every product takes the same review time.</p>
+    </div>
+    <div class="year">
+      <div class="tiles">
+        <div class="tile hero-tile"><span class="k" id="y-saved-k">Hours back per year</span><span class="v num" id="y-saved">–</span></div>
+        <div class="tile"><span class="k">Working days back (8 h)</span><span class="v num" id="y-days">–</span></div>
+        <div class="tile"><span class="k">Staff cost back</span><span class="v num" id="y-cost">–</span></div>
+      </div>
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-top"><span>By hand</span><span class="mono" id="y-manual">–</span></div>
+          <div class="bar bar-manual"><div id="y-bar-manual"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-top"><span>With MUTABIQ</span><span class="mono" id="y-mutabiq">–</span></div>
+          <div class="bar bar-mutabiq"><div id="y-bar-mutabiq"></div></div>
+        </div>
+        <p class="year-formula" id="y-formula"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="measured-title">
+    <div class="section-head">
+      <p class="eyebrow">The measured part</p>
+      <h2 id="measured-title">What we actually timed</h2>
+      <p class="lede" id="measured-lede"></p>
+    </div>
+    <div class="facts" id="facts"></div>
+    <div class="table-wrap">
+      <table>
+        <caption class="visually-hidden">Search times for the ten questions of the TRC case</caption>
+        <thead><tr><th>Step</th><th>Question asked</th><th class="n">Median</th><th class="n">Range</th><th>Top three results returned</th></tr></thead>
+        <tbody id="search-rows"></tbody>
+        <tfoot><tr><td colspan="2">All ten searches, one after another</td><td class="n" id="search-total"></td><td class="n"></td><td></td></tr></tfoot>
+      </table>
+    </div>
+    <p class="note" id="search-note"></p>
+
+    <div class="subhead">
+      <h3>The texts a person would have to read</h3>
+      <p>Counted from the indexed knowledge base</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <caption class="visually-hidden">Size of each indexed instrument</caption>
+        <thead><tr><th>Instrument</th><th class="n">Pages</th><th class="n">Passages</th><th class="n">Words</th><th>In the TRC case</th></tr></thead>
+        <tbody id="corpus-rows"></tbody>
+        <tfoot><tr><td>All seven instruments</td><td class="n" id="c-pages"></td><td class="n" id="c-passages"></td><td class="n" id="c-words"></td><td></td></tr></tfoot>
+      </table>
+    </div>
+    <p class="note">Words are whitespace-separated tokens of two or more characters in the extracted original text. OCR splits some Arabic words and leaves one-letter fragments, which this count leaves out so the manual reading time is not overstated.</p>
+  </section>
+
+  <section class="wrap" aria-labelledby="method-title">
+    <div class="section-head">
+      <p class="eyebrow">Read before quoting</p>
+      <h2 id="method-title">What this shows, and what it does not</h2>
+    </div>
+    <div class="method">
+      <div class="panel">
+        <h3>How to read it</h3>
+        <ul>
+          <li>This is a model. The only measured parts are the search times and the rule-check time. Everything a person does on either side is an assumption.</li>
+          <li>The MUTABIQ side still includes human time: entering the product, reviewing every finding against its cited article, and checking the form. MUTABIQ prepares the file. The applicant signs it and the authority decides.</li>
+          <li>The rule checks in the app are deterministic code written for this one trial case, on sample company and product data.</li>
+          <li>Search is not perfect. Two of the ten questions did not bring TRC text to the top, which is why every finding goes to a person for review.</li>
+          <li>Search times are from one machine with the model already loaded. Slower computers will take longer, but still seconds, not hours.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>How to turn this into a measurement</h3>
+        <ol>
+          <li>Give two or three people the DEMO-X1 sample documents and the seven official PDFs.</li>
+          <li>Time each person answering the four questions by hand, and filling the Annex 1 form.</li>
+          <li>Time the same people doing the same case in MUTABIQ, including their review of every finding.</li>
+          <li>Put the times into the sliders above and say how many people took part.</li>
+          <li>Better still, run it with real importers in a pilot. That is the number to quote.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><strong>MUTABIQ</strong> · Every requirement, backed by evidence. <span class="ar" lang="ar">كل متطلب، له دليل.</span></span>
+    <span id="foot-run"></span>
+  </div>
+</footer>
+
+<script>
+const DATA = {"measured_at": "2026-10-10T08:02:16.427952+00:00", "mode": "dense", "model": "BAAI/bge-m3", "model_load_s": 14.7, "machine": "Windows 11, 32 threads, CPU only", "runs_per_question": 5, "corpus": [{"id": "mit-import-export-law-21-2001", "pages": 3, "passages": 27, "words": 1005, "words_2plus": 927}, {"id": "mit-import-export-licenses-system-114-2004", "pages": 4, "passages": 29, "words": 1339, "words_2plus": 1299}, {"id": "moa-agriculture-law-13-2015", "pages": 33, "passages": 131, "words": 12876, "words_2plus": 12174}, {"id": "trc-technical-standards-specifications", "pages": 151, "passages": 328, "words": 84826, "words_2plus": 40977}, {"id": "trc-type-approval-annexes-2-2025", "pages": 9, "passages": 3, "words": 1277, "words_2plus": 1196}, {"id": "trc-type-approval-instructions-2-2025", "pages": 12, "passages": 39, "words": 4061, "words_2plus": 3802}, {"id": "ustr-jordan-fta-rules-of-origin", "pages": 5, "passages": 15, "words": 2027, "words_2plus": 1968}], "searches": [{"step": "rules", "q": "ما هي الأجهزة التي تحتاج إلى موافقة نوعية من هيئة تنظيم قطاع الاتصالات؟", "median_ms": 139, "min_ms": 129, "max_ms": 190, "items": 12, "top": [{"doc": "trc-type-approval-instructions-2-2025", "article": "6", "pages": [4, 4]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "5", "pages": [2, 3]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "18", "pages": [10, 11]}]}, {"step": "rules", "q": "Does a smartphone need type approval before it can be imported into Jordan?", "median_ms": 127, "min_ms": 118, "max_ms": 151, "items": 11, "top": [{"doc": "ustr-jordan-fta-rules-of-origin", "article": null, "pages": [1, 1]}, {"doc": "ustr-jordan-fta-rules-of-origin", "article": "10", "pages": [4, 5]}, {"doc": "ustr-jordan-fta-rules-of-origin", "article": "4", "pages": [1, 1]}]}, {"step": "evidence", "q": "ما هي الوثائق المطلوبة لطلب الموافقة النوعية؟", "median_ms": 123, "min_ms": 120, "max_ms": 126, "items": 12, "top": [{"doc": "trc-type-approval-instructions-2-2025", "article": "5", "pages": [2, 3]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "18", "pages": [11, 12]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "13", "pages": [7, 8]}]}, {"step": "evidence", "q": "Is a test report from an accredited laboratory required for type approval?", "median_ms": 141, "min_ms": 130, "max_ms": 152, "items": 12, "top": [{"doc": "trc-type-approval-instructions-2-2025", "article": "5", "pages": [2, 3]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "18", "pages": [10, 11]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "13", "pages": [7, 8]}]}, {"step": "evidence", "q": "ما هي المواصفات الفنية لأجهزة الهاتف الخلوي LTE؟", "median_ms": 133, "min_ms": 127, "max_ms": 151, "items": 8, "top": [{"doc": "trc-technical-standards-specifications", "article": null, "pages": [32, 32]}, {"doc": "trc-technical-standards-specifications", "article": null, "pages": [32, 34]}, {"doc": "trc-technical-standards-specifications", "article": null, "pages": [9, 9]}]}, {"step": "evidence", "q": "ما هي متطلبات الملصق على الجهاز الحاصل على الموافقة النوعية؟", "median_ms": 135, "min_ms": 133, "max_ms": 145, "items": 12, "top": [{"doc": "trc-type-approval-instructions-2-2025", "article": "5", "pages": [2, 3]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "5", "pages": [3, 4]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "18", "pages": [10, 11]}]}, {"step": "gaps", "q": "هل الفأرة اللاسلكية معفاة من الموافقة النوعية؟", "median_ms": 142, "min_ms": 132, "max_ms": 157, "items": 12, "top": [{"doc": "trc-type-approval-instructions-2-2025", "article": "18", "pages": [10, 11]}, {"doc": "trc-type-approval-annexes-2-2025", "article": null, "pages": [6, 9]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "18", "pages": [11, 12]}]}, {"step": "gaps", "q": "What happens if the model in the test report differs from the declared model?", "median_ms": 148, "min_ms": 140, "max_ms": 152, "items": 9, "top": [{"doc": "moa-agriculture-law-13-2015", "article": "20", "pages": [13, 13]}, {"doc": "trc-technical-standards-specifications", "article": null, "pages": [100, 100]}, {"doc": "trc-technical-standards-specifications", "article": null, "pages": [99, 99]}]}, {"step": "form", "q": "ما هي رسوم الموافقة النوعية لأجهزة الاتصالات؟", "median_ms": 124, "min_ms": 119, "max_ms": 138, "items": 12, "top": [{"doc": "trc-type-approval-instructions-2-2025", "article": "18", "pages": [11, 12]}, {"doc": "trc-type-approval-annexes-2-2025", "article": null, "pages": [1, 5]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "5", "pages": [2, 3]}]}, {"step": "form", "q": "ما هي البيانات المطلوبة في نموذج طلب الموافقة النوعية؟", "median_ms": 121, "min_ms": 119, "max_ms": 134, "items": 12, "top": [{"doc": "trc-type-approval-instructions-2-2025", "article": "5", "pages": [2, 3]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "5", "pages": [3, 4]}, {"doc": "trc-type-approval-instructions-2-2025", "article": "18", "pages": [11, 12]}]}]};
+
+const SHORT = {
+  'mit-import-export-law-21-2001': 'Import & Export Law 21/2001',
+  'mit-import-export-licenses-system-114-2004': 'Licences & Cards Bylaw 114/2004',
+  'moa-agriculture-law-13-2015': 'Agriculture Law 13/2015',
+  'ustr-jordan-fta-rules-of-origin': 'US–Jordan FTA, Annex 2.2',
+  'trc-type-approval-instructions-2-2025': 'TRC Instructions 2/2025',
+  'trc-technical-standards-specifications': 'TRC Technical Standards',
+  'trc-type-approval-annexes-2-2025': 'TRC Annexes 1–4',
+};
+const IN_CASE = {
+  'trc-type-approval-instructions-2-2025': 'Read in full',
+  'trc-type-approval-annexes-2-2025': 'Read in full',
+  'trc-technical-standards-specifications': 'Scanned for this device',
+};
+const GLOSS = {
+  0: 'Which devices need TRC type approval?',
+  2: 'Which documents must accompany a type-approval application?',
+  4: 'What are the technical specifications for LTE mobile phones?',
+  5: 'What are the label requirements for a type-approved device?',
+  6: 'Is a wireless mouse exempt from type approval?',
+  8: 'What are the type-approval fees for telecom devices?',
+  9: 'What information does the type-approval application form ask for?',
+};
+const OFF_TARGET = { 1: 'Top results came from the FTA rules of origin, not TRC.', 7: 'Top result came from the Agriculture Law.' };
+const STEP_NAMES = { rules: 'Q1', evidence: 'Q2', gaps: 'Q3', form: 'Q4' };
+const REQUIREMENTS = 8; // findings for DEMO-X1 in web/js/core.mjs assessmentFindings()
+const DOCS_TO_FIND = 3; // TRC Instructions, Annexes, Technical Standards
+const RULE_CHECK_MS = 0.001719;
+
+const corpus = Object.fromEntries(DATA.corpus.map((c) => [c.id, c]));
+const readWords = corpus['trc-type-approval-instructions-2-2025'].words_2plus + corpus['trc-type-approval-annexes-2-2025'].words_2plus;
+const stdPages = corpus['trc-technical-standards-specifications'].pages;
+const searchMs = (step) => DATA.searches.filter((s) => s.step === step).reduce((a, s) => a + s.median_ms, 0);
+const searchCount = (step) => DATA.searches.filter((s) => s.step === step).length;
+
+const FIELDS = [
+  { group: 'manual', id: 'findMin', label: 'Finding and downloading each official document', unit: 'min', min: 5, max: 60, step: 5, def: 15,
+    help: 'Three documents: the TRC Instructions, the annexes and the technical standards list.' },
+  { group: 'manual', id: 'wpm', label: 'Reading speed for Arabic legal text', unit: 'words/min', min: 60, max: 250, step: 10, def: 120,
+    help: 'Silent reading of English non-fiction averages about 238 words per minute (Brysbaert, 2019). Careful reading of Arabic regulations is slower.' },
+  { group: 'manual', id: 'scan', label: 'Scanning the standards list, per page', unit: 'min', min: 0.1, max: 2, step: 0.1, def: 0.5,
+    help: 'Looking through 151 pages of ETSI/EN tables for the rows that apply to a smartphone.' },
+  { group: 'manual', id: 'check', label: 'Checking one requirement against the documents', unit: 'min', min: 5, max: 45, step: 5, def: 15,
+    help: 'Finding the clause, then the matching page in the DoC, datasheet or test report.' },
+  { group: 'manual', id: 'form', label: 'Filling the Annex 1 form and working out the fees', unit: 'min', min: 15, max: 180, step: 5, def: 60 },
+  { group: 'mutabiq', id: 'inputMin', label: 'Entering the product and attaching its documents', unit: 'min', min: 2, max: 30, step: 1, def: 10,
+    help: 'The company profile is entered once and reused.' },
+  { group: 'mutabiq', id: 'review', label: 'Reviewing one finding and its cited article', unit: 'min', min: 1, max: 15, step: 1, def: 5,
+    help: 'Every finding links to the article, page and file it came from.' },
+  { group: 'mutabiq', id: 'formReview', label: 'Checking the pre-filled form before signing', unit: 'min', min: 5, max: 60, step: 5, def: 15 },
+  { group: 'year', id: 'products', label: 'Products needing type approval per year', unit: '', min: 1, max: 100, step: 1, def: 12 },
+  { group: 'year', id: 'repeat', label: 'Reading repeated for each further product, by hand', unit: '%', min: 0, max: 100, step: 5, def: 30,
+    help: 'Rules change, device classes differ, and people forget. 0% means you never re-read anything.' },
+  { group: 'year', id: 'rate', label: 'Staff cost per hour', unit: 'JOD', min: 1, max: 30, step: 0.5, def: 6,
+    help: 'Salary plus overheads for the person preparing the file.' },
+];
+const GROUPS = [
+  { id: 'manual', title: 'By hand', swatch: 'var(--m3)' },
+  { id: 'mutabiq', title: 'With MUTABIQ', swatch: 'var(--t3)' },
+  { id: 'year', title: 'Over a year', swatch: 'var(--gold)' },
+];
+const defaults = Object.fromEntries(FIELDS.map((f) => [f.id, f.def]));
+let A = { ...defaults };
+try { const saved = JSON.parse(localStorage.getItem('mutabiq-time-race') || 'null'); if (saved) A = { ...A, ...saved }; } catch (e) { /* storage unavailable */ }
+
+// ------------------------------------------------------------------ model
+const fmtInt = (n) => Math.round(n).toLocaleString('en-US');
+function fmtDur(min) {
+  if (min < 1 / 60) return `${(min * 60000).toFixed(0)} ms`;
+  if (min < 1) return `${(min * 60).toFixed(1)} s`;
+  const m = Math.round(min);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60), r = m % 60;
+  return r ? `${h} h ${r} min` : `${h} h`;
+}
+function fmtClock(min) {
+  const s = Math.round(min * 60);
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  return `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+}
+const msMin = (ms) => ms / 60000;
+
+function model(a) {
+  const steps = [
+    { id: 'rules', q: 'Which rules apply to this product?',
+      manual: [
+        { label: 'Find and download the TRC Instructions, annexes and standards list', min: DOCS_TO_FIND * a.findMin,
+          formula: `${DOCS_TO_FIND} documents × ${a.findMin} min`, tags: ['fact', 'assumption'] },
+      ],
+      mutabiq: [
+        { label: 'Enter the product and attach its documents', min: a.inputMin, formula: `${a.inputMin} min`, tags: ['assumption'] },
+        { label: `Search for the applicable rules (${searchCount('rules')} searches)`, min: msMin(searchMs('rules')),
+          formula: `${searchMs('rules')} ms, sum of medians`, tags: ['measured'] },
+      ] },
+    { id: 'evidence', q: 'Which evidence proves each requirement?',
+      manual: [
+        { label: 'Read the Instructions and Annexes', min: readWords / a.wpm, formula: `${fmtInt(readWords)} words ÷ ${a.wpm} words/min`, tags: ['fact', 'assumption'] },
+        { label: 'Scan the standards list for this device', min: stdPages * a.scan, formula: `${stdPages} pages × ${a.scan} min`, tags: ['fact', 'assumption'] },
+      ],
+      mutabiq: [
+        { label: `Search for the evidence provisions (${searchCount('evidence')} searches)`, min: msMin(searchMs('evidence')),
+          formula: `${searchMs('evidence')} ms, sum of medians`, tags: ['measured'] },
+        { label: `Run the rule checks (${REQUIREMENTS} findings)`, min: msMin(RULE_CHECK_MS),
+          formula: `${(RULE_CHECK_MS * 1000).toFixed(1)} µs per run`, tags: ['measured'] },
+      ] },
+    { id: 'gaps', q: 'What is missing or inconsistent?',
+      manual: [
+        { label: 'Check each requirement against the documents', min: REQUIREMENTS * a.check, formula: `${REQUIREMENTS} requirements × ${a.check} min`, tags: ['fact', 'assumption'] },
+      ],
+      mutabiq: [
+        { label: 'Review each finding and its cited article', min: REQUIREMENTS * a.review, formula: `${REQUIREMENTS} findings × ${a.review} min`, tags: ['fact', 'assumption'] },
+        { label: `Exemption and conflict searches (${searchCount('gaps')} searches)`, min: msMin(searchMs('gaps')),
+          formula: `${searchMs('gaps')} ms, sum of medians`, tags: ['measured'] },
+      ] },
+    { id: 'form', q: 'How do we fill the official application?',
+      manual: [
+        { label: 'Fill the Annex 1 form and work out the Annex 2 fees', min: a.form, formula: `${a.form} min`, tags: ['assumption'] },
+      ],
+      mutabiq: [
+        { label: 'Check the pre-filled form before signing', min: a.formReview, formula: `${a.formReview} min`, tags: ['assumption'] },
+        { label: `Form and fee searches (${searchCount('form')} searches)`, min: msMin(searchMs('form')),
+          formula: `${searchMs('form')} ms, sum of medians`, tags: ['measured'] },
+      ] },
+  ];
+  for (const s of steps) {
+    s.manualMin = s.manual.reduce((x, i) => x + i.min, 0);
+    s.mutabiqMin = s.mutabiq.reduce((x, i) => x + i.min, 0);
+  }
+  const manual = steps.reduce((x, s) => x + s.manualMin, 0);
+  const mutabiq = steps.reduce((x, s) => x + s.mutabiqMin, 0);
+  const learnMin = steps[0].manualMin + steps[1].manualMin;
+  const doMin = steps[2].manualMin + steps[3].manualMin;
+  const extra = Math.max(0, a.products - 1);
+  const yearManual = manual + extra * (doMin + (a.repeat / 100) * learnMin);
+  const yearMutabiq = a.products * mutabiq;
+  return { steps, manual, mutabiq, learnMin, doMin, yearManual, yearMutabiq };
+}
+
+// ------------------------------------------------------------------ rendering
+const $ = (sel) => document.querySelector(sel);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const TAG_TEXT = { measured: 'Measured', fact: 'Fact', assumption: 'Assumption' };
+const tag = (k) => `<span class="tag tag-${k}">${TAG_TEXT[k]}</span>`;
+
+function buildControls() {
+  $('#controls').innerHTML = GROUPS.map((g) => `
+    <div class="panel">
+      <h3><i style="background:${g.swatch}"></i>${g.title}</h3>
+      ${FIELDS.filter((f) => f.group === g.id).map((f) => `
+        <div class="field">
+          <div class="field-top"><label for="f-${f.id}">${esc(f.label)}</label><output for="f-${f.id}" id="o-${f.id}"></output></div>
+          <input type="range" id="f-${f.id}" min="${f.min}" max="${f.max}" step="${f.step}" value="${A[f.id]}">
+          ${f.help ? `<small>${esc(f.help)}</small>` : ''}
+        </div>`).join('')}
+    </div>`).join('');
+  for (const f of FIELDS) {
+    $(`#f-${f.id}`).addEventListener('input', (e) => {
+      A[f.id] = Number(e.target.value);
+      try { localStorage.setItem('mutabiq-time-race', JSON.stringify(A)); } catch (err) { /* storage unavailable */ }
+      stopRace();
+      render();
+    });
+  }
+}
+function fieldText(f) {
+  const v = A[f.id];
+  if (f.unit === '%') return `${v}%`;
+  if (f.unit === 'JOD') return `${v.toFixed(v % 1 ? 1 : 0)} JOD`;
+  return f.unit ? `${v} ${f.unit}` : String(v);
+}
+
+let M = model(A);
+function render() {
+  M = model(A);
+  for (const f of FIELDS) { $(`#o-${f.id}`).textContent = fieldText(f); $(`#f-${f.id}`).value = A[f.id]; }
+
+  // race tracks, one shared scale
+  const span = Math.max(M.manual, M.mutabiq);
+  const hourPct = (60 / span) * 100;
+  for (const lane of ['manual', 'mutabiq']) {
+    const track = $(`#track-${lane}`);
+    track.style.setProperty('--hour', `${hourPct}%`);
+    const total = lane === 'manual' ? M.manual : M.mutabiq;
+    track.querySelector('.segs').innerHTML = M.steps.map((s, i) => {
+      const min = lane === 'manual' ? s.manualMin : s.mutabiqMin;
+      const w = (min / span) * 100;
+      return `<div class="seg${w < 6 ? ' hide-label' : ''}" style="width:${w}%" title="Q${i + 1} · ${esc(fmtDur(min))}"><span>Q${i + 1}</span></div>`;
+    }).join('');
+    track.querySelector('.segs').style.width = '100%';
+    $(`#lane-time-${lane}`).textContent = fmtDur(total);
+  }
+  // hour grid by gradient; axis labels
+  const hours = Math.ceil(span / 60);
+  const every = hours > 12 ? Math.ceil(hours / 8) : 1;
+  let axis = '<span style="left:0">0 h</span>';
+  for (let h = every; h * 60 <= span; h += every) axis += `<span style="left:${(h * 60 / span) * 100}%">${h} h</span>`;
+  $('#axis').innerHTML = axis;
+  $('#race-scale').textContent = every === 1 ? 'Grid lines are one hour apart.' : `Grid lines are one hour apart; labels every ${every} hours.`;
+  const totalSearch = DATA.searches.reduce((a, s) => a + s.median_ms, 0);
+  $('#search-callout').innerHTML = `Includes ${(totalSearch / 1000).toFixed(1)} s of searching ${tag('measured')}, too short to see at this scale.`;
+
+  $('#step-key').innerHTML = M.steps.map((s, i) => `<span><b>Q${i + 1}</b>${esc(s.q)}</span>`).join('');
+
+  // ledger
+  $('#ledger').innerHTML = M.steps.map((s, i) => `
+    <article class="ledger-row">
+      <div class="ledger-q"><span class="qn">Q${i + 1}</span><h3>${esc(s.q)}</h3></div>
+      ${['manual', 'mutabiq'].map((lane) => `
+        <div class="ledger-cell">
+          <div class="cell-top"><span class="cell-who">${lane === 'manual' ? 'By hand' : 'With MUTABIQ'}</span>
+            <span class="cell-total">${fmtDur(lane === 'manual' ? s.manualMin : s.mutabiqMin)}</span></div>
+          <ul class="items">${s[lane].map((it) => `
+            <li><div class="item-line"><span>${esc(it.label)}</span><span class="t">${fmtDur(it.min)}</span></div>
+              <span class="formula">${esc(it.formula)}</span>
+              <span class="tags">${it.tags.map(tag).join('')}</span></li>`).join('')}
+          </ul>
+        </div>`).join('')}
+    </article>`).join('');
+
+  // year
+  const savedYear = M.yearManual - M.yearMutabiq;
+  $('#y-saved-k').textContent = savedYear >= 0 ? `Hours back per year (${A.products} product${A.products === 1 ? '' : 's'})` : 'Extra hours per year';
+  $('#y-saved').textContent = `${fmtInt(Math.abs(savedYear) / 60)} h`;
+  $('#y-days').textContent = (Math.abs(savedYear) / 60 / 8).toFixed(1);
+  $('#y-cost').textContent = `${fmtInt(Math.abs(savedYear) / 60 * A.rate)} JOD`;
+  $('#y-manual').textContent = fmtDur(M.yearManual);
+  $('#y-mutabiq').textContent = fmtDur(M.yearMutabiq);
+  const ymax = Math.max(M.yearManual, M.yearMutabiq);
+  $('#y-bar-manual').style.width = `${(M.yearManual / ymax) * 100}%`;
+  $('#y-bar-mutabiq').style.width = `${(M.yearMutabiq / ymax) * 100}%`;
+  $('#y-formula').innerHTML = `By hand: ${esc(fmtDur(M.manual))} for the first product, then ${esc(fmtDur(M.doMin))} of checks and form + ${A.repeat}% × ${esc(fmtDur(M.learnMin))} of finding and reading, for each of the other ${Math.max(0, A.products - 1)}.<br>With MUTABIQ: ${A.products} × ${esc(fmtDur(M.mutabiq))}.`;
+
+  if (!race.running) showFinal();
+}
+
+// ------------------------------------------------------------------ race
+const race = { running: false, raf: 0, start: 0 };
+const RACE_MS = 9000;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function paint(t) {
+  const span = Math.max(M.manual, M.mutabiq);
+  const tm = Math.min(t, M.manual), tq = Math.min(t, M.mutabiq);
+  $('#time-manual').textContent = fmtClock(tm);
+  $('#time-mutabiq').textContent = fmtClock(tq);
+  $('#track-manual .veil').style.left = `${(tm / span) * 100}%`;
+  $('#track-mutabiq .veil').style.left = `${(tq / span) * 100}%`;
+  const race = $('#race');
+  const trackBox = $('#track-manual').getBoundingClientRect();
+  const raceBox = race.getBoundingClientRect();
+  $('#playhead').style.left = `${trackBox.left - raceBox.left + (Math.min(t, span) / span) * trackBox.width}px`;
+  const qDone = t >= M.mutabiq, mDone = t >= M.manual;
+  $('#clock-mutabiq').classList.toggle('done', qDone);
+  $('#clock-manual').classList.toggle('done', mDone);
+  $('#ready-flag').hidden = !qDone;
+  $('#note-mutabiq').textContent = qDone ? 'Ready for review' : stepAt(t, 'mutabiq');
+  $('#note-manual').textContent = mDone ? 'Ready for review' : stepAt(t, 'manual');
+  paintScene('manual', tm, mDone);
+  paintScene('mutabiq', tq, qDone);
+  const saved = M.manual - M.mutabiq;
+  if (qDone) {
+    const ahead = Math.min(t, M.manual) - M.mutabiq;
+    $('#saved-figure').textContent = mDone ? fmtDur(Math.abs(saved)) : `${fmtDur(ahead)}`;
+    $('#saved-label').textContent = mDone
+      ? (saved >= 0 ? `back per product file · ${Math.round((saved / M.manual) * 100)}% less time` : 'longer with MUTABIQ at these settings')
+      : 'ahead, and counting';
+  } else {
+    $('#saved-figure').textContent = '–';
+    $('#saved-label').textContent = 'back per product file';
+  }
+}
+function stepAt(t, lane) {
+  let acc = 0;
+  for (const [i, s] of M.steps.entries()) {
+    acc += lane === 'manual' ? s.manualMin : s.mutabiqMin;
+    if (t < acc) return `Q${i + 1}: ${s.q}`;
+  }
+  return '';
+}
+const DOING = {
+  manual: () => [
+    'Searching official websites for the TRC texts and downloading the PDFs',
+    `Reading ${fmtInt(readWords)} words of the Instructions and Annexes, then scanning ${stdPages} pages of standards`,
+    `Comparing the DoC, datasheet and test report against ${REQUIREMENTS} requirements`,
+    'Filling the Annex 1 form and working out the Annex 2 fees',
+    'File ready for review',
+  ],
+  mutabiq: () => [
+    'Entering the product and attaching its documents (company profile already saved)',
+    `MUTABIQ finds the cited provisions: ${fmtInt(searchMs('evidence'))} ms, measured`,
+    `Reviewing ${REQUIREMENTS} findings, each linked to its article and page`,
+    'Checking the pre-filled form and fees before signing',
+    'File ready for review. Time for coffee.',
+  ],
+};
+function stepIndex(t, lane) {
+  let acc = 0;
+  for (const [i, s] of M.steps.entries()) {
+    acc += lane === 'manual' ? s.manualMin : s.mutabiqMin;
+    if (t < acc) return i;
+  }
+  return 4;
+}
+function paintScene(lane, t, done) {
+  const scene = $(`#scene-${lane}`);
+  const i = done ? 4 : stepIndex(t, lane);
+  if (scene.dataset.step !== String(i) || !$(`#doing-${lane}`).textContent) {
+    scene.dataset.step = String(i);
+    $(`#doing-${lane}`).textContent = DOING[lane]()[i];
+  }
+  $(`#scene-time-${lane}`).textContent = fmtClock(t);
+}
+function showFinal() { paint(Math.max(M.manual, M.mutabiq)); $('#run-label').textContent = 'Run the race'; }
+function stopRace() { race.running = false; cancelAnimationFrame(race.raf); $('#race').classList.remove('running'); $('#scenes').classList.remove('racing'); }
+function frame(now) {
+  if (!race.running) return;
+  const span = Math.max(M.manual, M.mutabiq);
+  const p = Math.min(1, (now - race.start) / RACE_MS);
+  paint(p * span);
+  if (p < 1) race.raf = requestAnimationFrame(frame);
+  else { stopRace(); $('#run-label').textContent = 'Run again'; }
+}
+$('#run').addEventListener('click', () => {
+  stopRace();
+  if (reduceMotion) { showFinal(); return; }
+  race.running = true;
+  $('#race').classList.add('running');
+  $('#scenes').classList.add('racing');
+  race.start = performance.now();
+  $('#run-label').textContent = 'Racing…';
+  race.raf = requestAnimationFrame(frame);
+});
+$('#reset').addEventListener('click', () => {
+  A = { ...defaults };
+  try { localStorage.removeItem('mutabiq-time-race'); } catch (e) { /* storage unavailable */ }
+  stopRace();
+  render();
+});
+window.addEventListener('resize', () => { if (!race.running) showFinal(); });
+
+// ------------------------------------------------------------------ measured section
+function pages(p) { return p[0] === p[1] ? `p. ${p[0]}` : `pp. ${p[0]}–${p[1]}`; }
+function hitText(h) { return `${SHORT[h.doc] || h.doc}${h.article ? ` · Art. ${h.article}` : ''} · ${pages(h.pages)}`; }
+function buildMeasured() {
+  const d = new Date(DATA.measured_at);
+  const when = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const meds = DATA.searches.map((s) => s.median_ms);
+  const total = meds.reduce((a, b) => a + b, 0);
+  $('#measured-lede').textContent = `Ten questions a person preparing this file would ask, in Arabic and English. Each ran ${DATA.runs_per_question} times against the real knowledge base on ${when}, using ${DATA.model} ${DATA.mode} search with article-reference resolution, on one machine (${DATA.machine}). The model was already loaded.`;
+  const totalPages = DATA.corpus.reduce((a, c) => a + c.pages, 0);
+  $('#facts').innerHTML = [
+    { v: `${Math.min(...meds)}–${Math.max(...meds)} ms`, k: 'Median time per search, across the ten questions', t: 'measured' },
+    { v: `${(total / 1000).toFixed(1)} s`, k: 'All ten searches, one after another', t: 'measured' },
+    { v: `${DATA.model_load_s} s`, k: 'Loading the model when the server starts (once, not per file)', t: 'measured' },
+    { v: `${totalPages} pages`, k: `${DATA.corpus.length} official instruments, ${fmtInt(DATA.corpus.reduce((a, c) => a + c.passages, 0))} indexed passages`, t: 'fact' },
+  ].map((f) => `<div class="fact"><span class="v">${esc(f.v)}</span><span class="k">${esc(f.k)}</span><span>${tag(f.t)}</span></div>`).join('');
+
+  $('#search-rows').innerHTML = DATA.searches.map((s, i) => {
+    const ar = /[؀-ۿ]/.test(s.q);
+    const q = ar ? `<span class="q-ar" lang="ar" dir="rtl">${esc(s.q)}</span>${GLOSS[i] ? `<span class="q-gloss">${esc(GLOSS[i])}</span>` : ''}` : `<span>${esc(s.q)}</span>`;
+    const off = OFF_TARGET[i] ? `<div style="margin-top:.4rem"><span class="tag tag-off">Off target</span> <span class="q-gloss" style="display:inline">${esc(OFF_TARGET[i])}</span></div>` : '';
+    return `<tr><td><span class="step-pill">${STEP_NAMES[s.step]}</span></td><td>${q}${off}</td>
+      <td class="n">${s.median_ms} ms</td><td class="n">${s.min_ms}–${s.max_ms}</td>
+      <td><ul class="hits">${s.top.map((h) => `<li>${esc(hitText(h))}</li>`).join('')}</ul></td></tr>`;
+  }).join('');
+  $('#search-total').textContent = `${fmtInt(total)} ms`;
+  $('#search-note').textContent = `Results are listed as the engine returned them. We marked a result as off target only where the top results clearly came from the wrong instrument. The rule checks for the ${REQUIREMENTS} DEMO-X1 findings took ${(RULE_CHECK_MS * 1000).toFixed(1)} µs per run (Node.js, average of 1,000 runs).`;
+
+  $('#corpus-rows').innerHTML = DATA.corpus.map((c) => `<tr><td>${esc(SHORT[c.id] || c.id)}</td><td class="n">${c.pages}</td><td class="n">${c.passages}</td><td class="n">${fmtInt(c.words_2plus)}</td><td>${IN_CASE[c.id] ? esc(IN_CASE[c.id]) : '<span class="q-gloss" style="display:inline">Not needed for this case</span>'}</td></tr>`).join('');
+  $('#c-pages').textContent = fmtInt(totalPages);
+  $('#c-passages').textContent = fmtInt(DATA.corpus.reduce((a, c) => a + c.passages, 0));
+  $('#c-words').textContent = fmtInt(DATA.corpus.reduce((a, c) => a + c.words_2plus, 0));
+  $('#foot-run').textContent = `Measured ${when} · showcase/measure_time.py`;
+}
+
+buildControls();
+buildMeasured();
+render();
+</script>
